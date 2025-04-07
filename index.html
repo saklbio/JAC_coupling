@@ -263,7 +263,7 @@
 
           const motorPower = parseFloat(document.getElementsByName("motorPower")[0].value); // E6
           const motorPowerUnit = parseFloat(document.getElementsByName("motorPowerUnit")[0].value);
-          const motorSpeed = parseFloat(document.getElementsByName("motorSpeed")[0].value);
+          const motorSpeed = parseFloat(document.getElementsByName("motorSpeed")[0].value); // E7
           const fanSpeed = parseFloat(document.getElementsByName("fanSpeed")[0].value);
           const numFanBlade = parseFloat(document.getElementsByName("numFanBlade")[0].value);
           const DBSE = parseFloat(document.getElementsByName("DBSE")[0].value);
@@ -282,7 +282,7 @@
             // deflection[i] = roundTo(deflection[i], 3)
             Nb[i] = 946 * Math.sqrt(1/deflection[i]);
             Nb_75percnet[i] = Nb[i] * 0.75;
-            operation_torque[i] = Math.ceil(((motorPower * motorPowerUnit) / motorSpeed) * 9.8 * serviceFactor);
+            operation_torque[i] = Math.ceil(((motorPower * motorPowerUnit) / motorSpeed) * 9.8) * serviceFactor;
             minus10Nic[i] = Nb[i] * 0.9;
             plus5Nic[i] = Nb[i] * 1.05;
             isOkDBSE[i] = DBSE_range[i] >= DBSE * DBSEUnit;
