@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Input Data Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+      <h2 class="text-xl font-bold mb-4">INPUT DATA</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <div class="mb-4">
+            <label class="block font-medium">Motor Power</label>
+            <div class="flex">
+              <input
+                type="number"
+                placeholder="Enter value"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                name="motorPower"
+              />
+              <select name="motorPowerUnit" class="w-20 border border-gray-300 p-2 rounded-r">
+                <option value="1">KW</option>
+                <option value="2">HP</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">Motor Speed</label>
+            <div class="flex">
+              <input
+                type="number"
+                placeholder="Enter value"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                name="motorSpeed"
+              />
+              <span class="w-20 border border-gray-300 p-2 rounded-r">RPM</span>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">Fan Speed</label>
+            <div class="flex">
+              <input
+                type="number"
+                placeholder="Enter value"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                name="fanSpeed"
+              />
+              <span class="w-20 border border-gray-300 p-2 rounded-r">RPM</span>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">Motor Shaft Dia</label>
+            <div class="flex">
+              <input
+                type="number"
+                placeholder="Enter value"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                name="motorShaftDia"
+              />
+              <select name="motorShaftDiaUnit" class="w-20 border border-gray-300 p-2 rounded-r">
+                <option value="1">mm</option>
+                <option value="25.4">inch</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">Gearbox Shaft Dia</label>
+            <div class="flex">
+              <input
+                type="number"
+                placeholder="Enter value"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                name="gearboxShaftDia"
+              />
+              <select name="gearboxShaftDiaUnit" class="w-20 border border-gray-300 p-2 rounded-r">
+                <option value="1">mm</option>
+                <option value="25.4">inch</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">No. of Fan Blades</label>
+            <input
+              type="number"
+              placeholder="Enter value"
+              class="w-full border border-gray-300 p-2 rounded inputValues"
+              name="numFanBlade"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">DBSE</label>
+            <div class="flex">
+              <input
+                type="number"
+                placeholder="Enter value"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                name="DBSE"
+              />
+              <select name="DBSEUnit" class="w-20 border border-gray-300 p-2 rounded-r">
+                <option value="1">mm</option>
+                <option value="25.4">inch</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">Service Factor</label>
+            <input
+              type="number"
+              placeholder="Enter value"
+              class="w-full border border-gray-300 p-2 rounded inputValues" 
+              name="seviceFactor"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="mb-4">
+            <label class="block font-medium">Customer</label>
+            <input
+              type="text"
+              placeholder=""
+              class="w-full border border-gray-300 p-2 rounded"
+              name="customer"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">Project Name</label>
+            <input
+              type="text"
+              placeholder=""
+              class="w-full border border-gray-300 p-2 rounded"
+              name="projectName"
+            />
+          </div>
+          <div class="flex justify-center items-center h-48 mb-4">
+            <img
+              src="D:\개인\중앙 카플링\그림1.png"
+              alt="Placeholder Image"
+              class="h-full max-w-full"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-center mt-6">
+        <button
+          id="search-btn"
+          class="bg-blue-500 text-white px-10 py-4 rounded hover:bg-blue-600"
+        >
+          Search
+        </button>
+      </div>
+      <div
+        class="flex justify-center mt-4 mx-auto transform origin-center scale-50"
+      >
+        <img src="D:\개인\중앙 카플링\그림2.jpg" alt="JAC Coupling Logo" />
+      </div>
+    </div>
+
+    <footer class="bg-gray-200 text-center p-4 mt-8 ">
+      <p class="text-sm sm:text-md mb-2">Address : 부산시 사상구 새벽로 69 ( 학장동 720-1 ) (주)중앙 카프링 | 69, Saebyeok-ro, Sasang-gu, Busan, Republic of Korea</p>
+      <p class="text-sm sm:text-md mb-2">Tel : 051-317-0822 | Fax : 051-317-0855 | E-mail : <a href="mailto:jac@jacoup.co.kr" class="text-blue-500 hover:underline">jac@jacoup.co.kr</p>
+      <p class="text-xs sm:text-sm text-gray-600">&copy; 2025 JAC Coupling All rights Reserved.</p>
+    </footer>
+  
+
+    <script>
+      // Search 버튼 클릭 시 빈 input 확인 및 하이라이트 처리
+      document.getElementById("search-btn").addEventListener("click", function (event) {
+          const inputs = document.querySelectorAll(".inputValues");
+          let allFilled = true;
+          inputs.forEach((input) => {
+            // 기존의 하이라이트 제거
+            input.classList.remove("border-red-500");
+            // 입력 값이 없으면 하이라이트 추가
+            if (input.value.trim() === "") {
+              input.classList.add("border-red-500");
+              allFilled = false;
+            }
+          });
+          // 하나라도 빈 값이 있으면 경고 메시지 표시 및 기본 동작 중단 (예: form 제출)
+          if (!allFilled) {
+            event.preventDefault();
+            alert("Please Enter Value");
+          }
+
+          for(var i = 0; i < modelNames.length; i++){
+            //=(0.0015*925.98*$E$12*10^-3)*VLOOKUP($F$12, $L$35:$O$36, 4, FALSE)
+            weight[i] = 0.0015 * weightUnit[i] * DBSE * Math.pow(10,-3) * DBSEUnit.value;
+          };
+
+        });
+      //FixValue
+      const modelNames      = ["JCT133-70","JCT152-86","JCT152-108","JCT152-159","JCT171-108","JCT171-159","JCT171-210","JCT229-159","JCT229-210"]
+      const weightUnit      = [925.98, 1152.18, 1463.2, 2652.29, 1463.2, 2652.29, 3845.31, 2652.29, 3845.31]
+      const continueTorque  = [820, 1243, 1243, 1243, 2045, 2045, 2045, 4090, 4090]
+
+      //inputValue
+      let motorPower      = document.getElementsByName("motorPower");
+      let motorSpeed      = document.getElementsByName("motorSpeed");
+      let fanSpeed        = document.getElementsByName("fanSpeed");
+      let motorShaftDia   = document.getElementsByName("motorShaftDia");
+      let gearboxShaftDia = document.getElementsByName("gearboxShaftDia");
+      let numFanBlade     = document.getElementsByName("numFanBlade");
+      let DBSE            = document.getElementsByName("DBSE");             //E12
+      let DBSEUnit        = document.getElementsByName("DBSEUnit")[0];             
+      let seviceFactor    = document.getElementsByName("seviceFactor");
+      let customer        = document.getElementsByName("customer");
+      let projectName     = document.getElementsByName("projectName");
+      // Extra F열은 단위임임
+      //var
+      let weight = [];
+      let deflection = 0;
+      let Nb = 0;
+      let Nb_75percnet = 0;
+      let DBSE_range = 0;
+      let operation_torque = 0;
+      let BPF1 = fanSpeed * numFanBlade;
+      let BPF2 = BPF1 * 2;
+      let BPF3 = BPF1 * 3;
+      let minus10Nic = 0;
+
+
+    </script>
+  </body>
+</html>

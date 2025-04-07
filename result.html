@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JAC Coupling Inquiry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+      <div class="relative mx-auto w-fit max-w-3xl text-sm md:text-md font-bold text-blue-500">
+        <img src="D:\개인\중앙 카플링\resultIMG.png" alt="Coupling Diagram" class="w-full h-auto" />
+        
+        <!-- 각 텍스트 위치들 -->
+        <div class="absolute" style="top: 75%; left: 2%;">
+          <span name="diagramValue1">0</span>mm
+        </div>
+        <div class="absolute" style="top: 45%; left: 18%;">
+          <span name="diagramValue2">0</span>mm
+        </div>
+        <div class="absolute" style="top: 20%; left: 48%;">
+          <span name="diagramValue3">0</span>mm
+        </div>
+        <div class="absolute" style="top: 64%; left: 92%;">
+          <span name="diagramValue4">0</span>mm
+        </div>
+      </div>
+
+      <!-- 그리드 레이아웃을 반응형으로 변경 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <div class="mb-4">
+            <label class="block font-medium">Driver Hub Type</label>
+            <div class="flex">
+              <input
+                type="text"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">Driven Hub Type</label>
+            <div class="flex">
+              <input
+                type="text"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">Spacer Material</label>
+            <div class="flex">
+              <input
+                type="text"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">Continuous Torque</label>
+            <div class="flex">
+              <input
+                type="text"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">Operation RPM</label>
+            <div class="flex">
+              <input
+                type="text"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block font-medium">Distance Between Shaft Ends</label>
+            <div class="flex">
+              <input
+                type="text"
+                class="flex-1 border border-gray-300 p-2 rounded-l inputValues"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+        <div>
+          <h2 class="font-bold text-lg">JAC Coupling Inc</h2>
+          <p>Office: 69, Saebyeok-ro, Sasang-gu, Busan, 47018, Korea</p>
+          <p>Tel: +82-51-317-0822</p>
+          <h3 class="font-bold mt-4">Inquiry for Quotation</h3>
+          <a href="mailto:jac@jacoup.co.kr" class="text-blue-500">jac@jacoup.co.kr</a>
+          <div class="mt-4">
+            <label class="block">Customer</label>
+            <input type="text" class="w-full border rounded p-2 mb-2" readonly />
+            <label class="block">Project Name</label>
+            <input type="text" class="w-full border rounded p-2" readonly />
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 text-center">
+        <button class="bg-blue-500 text-white px-10 py-4 rounded">Return</button>
+      </div>
+      <div class="mt-6 text-center">
+        <div
+          class="flex justify-center mt-4 mx-auto transform origin-center scale-50"
+        >
+        <img src="D:\개인\중앙 카플링\그림2.jpg" alt="JAC Coupling Logo" />
+      </div>
+      </div>
+    </div>
+    <footer class="bg-gray-200 text-center p-4 mt-8 ">
+        <p class="text-sm sm:text-md mb-2">Address : 부산시 사상구 새벽로 69 ( 학장동 720-1 ) (주)중앙 카프링 | 69, Saebyeok-ro, Sasang-gu, Busan, Republic of Korea</p>
+        <p class="text-sm sm:text-md mb-2">Tel : 051-317-0822 | Fax : 051-317-0855 | E-mail : <a href="mailto:jac@jacoup.co.kr" class="text-blue-500 hover:underline">jac@jacoup.co.kr</p>
+        <p class="text-xs sm:text-sm text-gray-600">&copy; 2025 JAC Coupling All rights Reserved.</p>
+    </footer>
+  </body>
+</html>

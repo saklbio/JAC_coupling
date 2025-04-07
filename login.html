@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>로그인</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-between min-h-screen">
+  <!-- 모바일: max-w-sm, 데스크톱: max-w-md -->
+  <div class="w-full max-w-sm md:max-w-md flex-grow flex items-center justify-center">
+    <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full">
+      <h2 class="text-center text-2xl font-bold mb-6">로그인</h2>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="username">사용자 이름</label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+               id="username" 
+               type="text" 
+               placeholder="사용자 이름">
+      </div>
+      <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">비밀번호</label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" 
+               id="password" 
+               type="password" 
+               placeholder="비밀번호">
+      </div>
+      <div class="flex items-center justify-between">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                type="submit">
+          로그인
+        </button>
+      </div>
+    </form>
+  </div>
+  <footer class="bg-gray-200 text-center p-4 mt-8 w-full">
+    <p class="text-sm sm:text-md mb-2">Address: 부산시 사상구 새벽로 69 (학장동 720-1) (주)중앙 카프링 | 69, Saebyeok-ro, Sasang-gu, Busan, Republic of Korea</p>
+    <p class="text-sm sm:text-md mb-2">Tel: 051-317-0822 | Fax: 051-317-0855 | E-mail: <a href="mailto:jac@jacoup.co.kr" class="text-blue-500 hover:underline">jac@jacoup.co.kr</a></p>
+    <p class="text-xs sm:text-sm text-gray-600">&copy; 2025 JAC Coupling All rights Reserved.</p>
+  </footer>
+</body>
+</html>
