@@ -30,6 +30,7 @@
                 type="button" onclick="login()">
           로그인
         </button>
+        <button type="button" onclick="toMain()" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">to Main</button>
       </div>
     </form>
     <div class="text-sm text-gray-600">
@@ -57,6 +58,10 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    function toMain(){
+      location.href='./index.html';
+    }
+
 
     async function login(){
       const id = document.getElementById("login-id").value;
@@ -79,6 +84,7 @@
       window.location.href = "list.html";
     }
     window.login = login;
+    window.toMain = toMain;
   </script>
 </body>
 </html>

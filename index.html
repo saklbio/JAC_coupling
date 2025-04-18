@@ -330,7 +330,7 @@
         document.querySelectorAll(".inputValues").forEach((el) => {
           if (!el.value.trim()) {
             el.classList.add("border-red-500");
-            allFilled = false;
+            // allFilled = false;
           } else {
             el.classList.remove("border-red-500");
             input[el.name] = parseFloat(el.value);
@@ -378,23 +378,25 @@
 
           if (conditionPass) {
             const result = {};
-            result.driver = input.motorShaftDia * input.motorShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)",
-            result.driven = input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)",
-            result.spacer = "CFRP",
-            result.modelName = `${modelName}${result.driver == "Standard(N)" ? "N" : "U"}${result.driven == "Standard(N)" ? "N" : "U"}`,
-            result.torque = `${model.continue_torque} Nm = ${Math.round(model.continue_torque * 8.8507)} lbf·in`,
-            result.RPM = input.motorSpeed,
-            result.distance = `${input.DBSE} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
-            result.diagramValue1 = `${input.motorShaftDia} ${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`,
-            // result.diagramValue2 = `${input.DBSEUnit == 1 ? "mm" : "inch"}`, // E23
-            // result.diagramValue3 = `${input.DBSEUnit == 1 ? "mm" : "inch"}`, // E24
-            result.diagramValue2 = `${model.ref1} ${input.DBSEUnit == 1 ? "mm" : "inch"}`, // E23
-            result.diagramValue3 = `${model.ref2} ${input.DBSEUnit == 1 ? "mm" : "inch"}`, // E24
-            result.diagramValue4 = `${input.DBSE} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
-            result.diagramValue5 = `${input.gearboxShaftDia} ${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`,
-            result.customer = document.getElementsByName("customer")[0].value,
-            result.project = document.getElementsByName("projectName")[0].value
-
+            result.driver             = input.motorShaftDia * input.motorShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)",
+            result.driven             = input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)",
+            result.spacer             = "CFRP",
+            result.modelName          = `${modelName}${result.driver == "Standard(N)" ? "N" : "U"}${result.driven == "Standard(N)" ? "N" : "U"}`,
+            result.torque             = `${model.continue_torque} Nm = ${Math.round(model.continue_torque * 8.8507)} lbf·in`,
+            result.RPM                = input.motorSpeed,
+            result.distance           = `${formatIfDecimal(input.DBSE)} ${(input.DBSEUnit) == 1 ? "mm" : "inch"}`,
+            result.diagramValue1      = `${formatIfDecimal(input.motorShaftDia)} ${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`,
+            result.diagramValue2      = `${formatIfDecimal(model.ref1)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
+            result.diagramValue3      = `${formatIfDecimal(model.ref2)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
+            result.diagramValue4      = `${formatIfDecimal(input.DBSE)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
+            result.diagramValue5      = `${formatIfDecimal(input.gearboxShaftDia)} ${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`,
+            result.customer           = document.getElementsByName("customer")[0].value,
+            result.project            = document.getElementsByName("projectName")[0].value
+            input.motorPowerUnit      = `${input.motorPowerUnit == 1 ? "mm" : "inch"}`
+            input.motorShaftDiaUnit   = `${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`
+            input.gearboxShaftDiaUnit = `${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`
+            input.DBSEUnit            = `${input.DBSEUnit == 1 ? "mm" : "inch"}`
+            result.inputData = JSON.stringify(input);
             // 세션 저장 및 페이지 이동
             for (const [key, val] of Object.entries(result)) {
               sessionStorage.setItem(key, val);
@@ -408,7 +410,10 @@
         alert("조건을 만족하는 모델이 없습니다.");
       });
 
-
+      function formatIfDecimal(num) {
+        num = Number(num);
+        return Number.isInteger(num) ? num : parseFloat(num.toFixed(2));
+      }
 
       
 
