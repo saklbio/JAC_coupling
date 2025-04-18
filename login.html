@@ -6,37 +6,79 @@
   <title>로그인</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 flex flex-col items-center justify-between min-h-screen">
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen">
   <!-- 모바일: max-w-sm, 데스크톱: max-w-md -->
-  <div class="w-full max-w-sm md:max-w-md flex-grow flex items-center justify-center">
-    <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full">
+  <div class="w-full max-w-sm md:max-w-md flex flex-col items-center">
+    <form id="login-form" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full">
       <h2 class="text-center text-2xl font-bold mb-6">로그인</h2>
       <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="username">사용자 이름</label>
-        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-               id="username" 
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="login-id">이메일</label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+               id="login-id" 
                type="text" 
-               placeholder="사용자 이름">
+               placeholder="사용자 ID">
       </div>
       <div class="mb-6">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">비밀번호</label>
-        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" 
-               id="password" 
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="login-password">비밀번호</label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+               id="login-password" 
                type="password" 
                placeholder="비밀번호">
       </div>
       <div class="flex items-center justify-between">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
-                type="submit">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="button" onclick="login()">
           로그인
         </button>
       </div>
     </form>
+    <div class="text-sm text-gray-600">
+      계정이 없으신가요?
+      <a href="signup.html" class="text-blue-500 hover:underline font-medium">회원가입</a>
+    </div>
   </div>
   <footer class="bg-gray-200 text-center p-4 mt-8 w-full">
     <p class="text-sm sm:text-md mb-2">Address: 부산시 사상구 새벽로 69 (학장동 720-1) (주)중앙 카프링 | 69, Saebyeok-ro, Sasang-gu, Busan, Republic of Korea</p>
     <p class="text-sm sm:text-md mb-2">Tel: 051-317-0822 | Fax: 051-317-0855 | E-mail: <a href="mailto:jac@jacoup.co.kr" class="text-blue-500 hover:underline">jac@jacoup.co.kr</a></p>
     <p class="text-xs sm:text-sm text-gray-600">&copy; 2025 JAC Coupling All rights Reserved.</p>
   </footer>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    const firebaseConfig = {
+        apiKey: "AIzaSyC9MN1S5ANhPjKxkzWIaVc-yadzsDcrxnA",
+        authDomain: "jacoupling.firebaseapp.com",
+        projectId: "jacoupling",
+        storageBucket: "jacoupling.firebasestorage.app",
+        messagingSenderId: "1021071980880",
+        appId: "1:1021071980880:web:74038cbcac0c98999bd455",
+        measurementId: "G-Q3W7WP39B5"
+      };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+
+    async function login(){
+      const id = document.getElementById("login-id").value;
+      const password = document.getElementById("login-password").value;
+
+      const userRef = doc(db, "users", id);
+      const userSnap = await getDoc(userRef);
+      const user = userSnap.data();
+      if ( !userSnap.exists() || user.password !== password) {
+        alert("정보보가 일치하지 않습니다.");
+        return;
+      }
+
+      if (!user.is_approved) {
+        alert("관리자 승인 대기 중입니다.");
+        return;
+      }
+
+      sessionStorage.setItem("login_id", id); // ← id는 로그인 시 입력한 사용자 ID
+      window.location.href = "list.html";
+    }
+    window.login = login;
+  </script>
 </body>
 </html>

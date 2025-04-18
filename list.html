@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+      import { getFirestore, collection, getDocs, getDoc, query, where, setDoc, updateDoc, deleteDoc, doc, orderBy } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+    
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyC9MN1S5ANhPjKxkzWIaVc-yadzsDcrxnA",
+        authDomain: "jacoupling.firebaseapp.com",
+        projectId: "jacoupling",
+        storageBucket: "jacoupling.firebasestorage.app",
+        messagingSenderId: "1021071980880",
+        appId: "1:1021071980880:web:74038cbcac0c98999bd455",
+        measurementId: "G-Q3W7WP39B5"
+      };
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const db = getFirestore(app);
+
+      async function initData(){
+        const tbody = document.getElementById("modelList")
+        const selectQuery = query(
+          collection(db,"models"),
+          where("is_use","==",true),
+          orderBy("priority","asc")
+          
+        )
+        const originDocs = await getDocs(selectQuery);
+
+        const docs = [...originDocs.docs].sort((a, b) => a.id.localeCompare(b.id));
+        docs.forEach(doc => {
+          const model = doc.data();
+          let name = doc.id;
+          let weight_unit = model.weight_unit;
+          let continue_torque = model.continue_torque;
+          let deflection_ref = model.deflection_ref;
+          let DBSE_range = model.DBSE_range;
+          let maxBore_ref1 = model.maxBore_ref1;
+          let maxBore_ref2 = model.maxBore_ref2;
+          let priority = model.priority;
+          let ref1 = model.ref1;
+          let ref2 = model.ref2;
+
+          const row = document.createElement("tr");
+          row.id = name+"_row";
+          row.innerHTML = `
+            <td name="${name}_name"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 modelName">${name}</td>
+            <td name="${name}_weight_unit"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 weight_unit">${weight_unit}</td>
+            <td name="${name}_continue_torque"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 continue_torque">${continue_torque}</td>
+            <td name="${name}_deflection_ref"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 deflection_ref">${deflection_ref}</td>
+            <td name="${name}_DBSE_range"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 DBSE_range">${DBSE_range}</td>
+            <td name="${name}_maxBore_ref1"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 maxBore_ref1">${maxBore_ref1}</td>
+            <td name="${name}_maxBore_ref2"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 maxBore_ref2">${maxBore_ref2}</td>
+            <td name="${name}_priority"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 priority">${priority}</td>
+            <td name="${name}_ref1"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 priority">${ref1}</td>
+            <td name="${name}_ref2"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 priority">${ref2}</td>
+            <td name="${name}_buttonRow"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 buttonRow">
+              <button name="update-btn" onclick="updateModel('${name}_row')" class="inline-block w-24 bg-green-500 text-white px-5 py-1 my-1 rounded hover:bg-green-700">update</button>
+              <button name="del-btn" onclick="deleteModel('${name}')" class="inline-block w-24 bg-red-500 text-white px-5 py-1 rounded hover:bg-red-700">delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+
+        const add_row = document.createElement("tr");
+        add_row.innerHTML=`
+            <td class="py-2 px-4 border-b border-gray-300">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_modelName" placeholder="Enter modelName" autocomplete="off">
+            </td>
+            <td class="py-2 px-4 border-b border-gray-300">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_weight_unit" placeholder="Enter weight_unit" autocomplete="off">
+            </td>
+            <td class="py-2 px-4 border-b border-gray-300">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_continue_torque" placeholder="Enter continue_torque" autocomplete="off">
+            </td>
+            <td class="py-2 px-4 border-b border-gray-300">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_deflection_ref" placeholder="Enter deflection_ref" autocomplete="off">
+            </td>
+            <td class="py-2 px-4 border-b border-gray-300">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_DBSE_range" placeholder="Enter DBSE_range" autocomplete="off">
+            </td>
+            <td class="py-2 px-4 border-b border-gray-300">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_maxBore_ref1" placeholder="Enter maxBore_ref1" autocomplete="off">
+            </td>
+            <td class="py-2 px-4 border-b border-gray-300">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_maxBore_ref2" placeholder="Enter maxBore_ref2" autocomplete="off">
+            </td>
+            <td class="py-2 px-4 border-b border-gray-300">
+              <input type="number" class="w-full border border-gray-300 rounded px-2 py-1" id="add_priority" placeholder="Enter priority" autocomplete="off">
+            </td>
+            <td class="py-2 px-4 border-b border-gray-300">
+              <input type="number" class="w-full border border-gray-300 rounded px-2 py-1" id="add_ref1" placeholder="Enter ref1" autocomplete="off">
+            </td>
+            <td class="py-2 px-4 border-b border-gray-300">
+              <input type="number" class="w-full border border-gray-300 rounded px-2 py-1" id="add_ref2" placeholder="Enter ref2" autocomplete="off">
+            </td>
+            <td class="py-2 px-4 border-b border-gray-300">
+              <button onclick="addModel()"
+                id="add-btn"
+                class="inline-block w-24 bg-blue-500 text-white px-5 py-1 rounded hover:bg-blue-700"
+              >&nbsp&nbspadd&nbsp&nbsp</button>
+            </td>
+        `;
+
+        tbody.appendChild(add_row);
+      }
+
+
+      document.addEventListener("DOMContentLoaded", () => {
+        initData();
+      });
+
+      async function deleteModel(modelName) {
+
+        if (!confirm(`${modelName} 모델을 삭제할까요?`)) {return;}
+
+        try {
+          await deleteDoc(doc(db, "models", modelName));
+          alert("삭제 완료되었습니다.");
+          location.reload();
+        } catch (error) {
+          console.error("삭제 실패:", error); // 🔍 로그 3
+          alert("삭제 중 오류가 발생했습니다.");
+        }
+      }
+      const fields = ["weight_unit", "continue_torque", "deflection_ref", "DBSE_range", "maxBore_ref1", "maxBore_ref2", "priority", "ref1", "ref2"];
+
+      function updateModel(modelName) {
+        disableAllButtonsExcept(modelName); 
+        const row = document.getElementById(`${modelName}`);
+        if (!row) return;
+
+        const tds = row.querySelectorAll("td");
+
+        for (let index = 1; index < tds.length - 1; index++) {
+          const td = tds[index];
+          const value = td.textContent;
+          const fullName = td.getAttribute("name"); 
+          const currentModel = fullName.split("_")[0]; // 중복 방지 위해 이름 바꿈
+          const key = fullName.replace(currentModel + "_", "");
+
+          td.setAttribute("data-original", value);
+
+          // 고유한 input id 설정
+          const inputId = `update-${modelName}-${key}`;
+
+          td.innerHTML = `
+            <input type="text"
+                  class="border border-gray-300 rounded px-2 py-1 w-full
+                    transition-transform duration-200 ease-in-out hover:scale-105"
+                  value="${value}" 
+                  name="${key}">
+          `;
+
+        }
+
+        // 마지막 버튼 셀 바꾸기
+        const btnCell = row.querySelector(".buttonRow");
+        btnCell.innerHTML = `
+          <button onclick="submitUpdate('${modelName}')" class="inline-block w-24 bg-green-500 text-white px-5 py-1 my-1 rounded hover:bg-green-700">
+            Save
+          </button>
+          <button onclick="updateCancel('${modelName}')" class="inline-block w-24 bg-yellow-500 text-white px-5 py-1 my-1 rounded hover:bg-yellow-700">
+            Cancel
+          </button>
+        `;
+      }
+
+      function disableAllButtonsExcept(modelName) {
+        const allButtons = document.querySelectorAll("button");
+
+        allButtons.forEach(btn => {
+          const isTarget = btn.closest(`tr`)?.id === modelName;
+          if (!isTarget) {
+            btn.disabled = true;
+            btn.classList.add("opacity-50", "cursor-not-allowed");
+          }
+        });
+      }
+
+      function enableAllButtons() {
+        const allButtons = document.querySelectorAll("button");
+
+        allButtons.forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove("opacity-50", "cursor-not-allowed");
+        });
+      }
+
+      function updateCancel(modelName) {
+        enableAllButtons()
+        const row = document.getElementById(modelName);
+        if (!row) return;
+
+        const tds = row.querySelectorAll("td");
+
+        for (let index = 1; index < tds.length - 1; index++) {
+          const td = tds[index];
+          const originalValue = td.getAttribute("data-original") || "";
+          td.innerText = originalValue;
+        }
+
+        // 버튼 영역 복원
+        const btnCell = row.querySelector(".buttonRow");
+        btnCell.innerHTML = `
+          <button onclick="updateModel('${modelName}')" class="inline-block w-24 bg-green-500 text-white px-5 py-1 my-1 rounded hover:bg-green-700">
+            update
+          </button>
+          <button onclick="deleteModel('${modelName}')" class="inline-block w-24 bg-red-500 text-white px-5 py-1 my-1 rounded hover:bg-red-700">
+            delete
+          </button>
+        `;
+      }
+
+      async function submitUpdate(modelName) {
+        
+        console.log(modelName);
+        const currentModel = modelName.replace("_row","");
+        const row = document.getElementById(modelName);
+        if (!row) return;
+
+        const tds = row.querySelectorAll("td");
+        let updateData = {};
+
+        for (let i = 1; i < tds.length - 1; i++) {
+          const td = tds[i];
+          const fullName = td.getAttribute("name"); 
+          if (!fullName) continue;
+          const key = fullName.replace(currentModel + "_", "");
+          const originalValue = td.getAttribute("data-original");
+          const input = td.querySelectorAll(`[name="${key}"]`);
+          const newValue = input[0].value;
+          if (!input) continue;
+          if(originalValue != newValue){
+            updateData[key] = input[0].value;
+          }
+        }
+        
+        try {
+          await updateDoc(doc(db, "models", currentModel), updateData);
+          alert("update complete :)");
+          location.reload();
+        } catch (error) {
+          console.error("update fail!:", error);
+          alert("update Fail :(");
+        }
+        enableAllButtons();
+        updateCancel(modelName);
+      }
+
+      function checkData(key, alertMsg){
+        let value = document.getElementById(key).value;
+        if(value === "" || value == undefined || value == null){
+          alert(alertMsg);
+          document.getElementById(key).focus();
+          return "";
+        }
+        return value;
+      }
+      
+      async function addModel(){
+        
+        // let modelName = document.getElementById("add_modelName");
+        let modelName = checkData("add_modelName","Please Check Model Name...");
+        if(modelName == "") return;
+        let add_weight_unit = checkData("add_weight_unit","Please Check Weight Unit...");
+        if(add_weight_unit == "") return;
+        let add_continue_torque = checkData("add_continue_torque","Please Check Continue Torque...");
+        if(add_continue_torque == "") return;
+        let add_deflection_ref = checkData("add_deflection_ref","Please Check Deflection Ref...");
+        if(add_deflection_ref == "") return;
+        let add_DBSE_range = checkData("add_DBSE_range","Please Check DBSE Range...");
+        if(add_DBSE_range == "") return;
+        let add_maxBore_ref1 = checkData("add_maxBore_ref1","Please Check maxBore Ref1...");
+        if(add_maxBore_ref1 == "") return;
+        let add_maxBore_ref2 = checkData("add_maxBore_ref2","Please Check maxBore Ref2...");
+        if(add_maxBore_ref2 == "") return;
+        let add_priority = checkData("add_priority","Please Check priority...");
+        if(add_priority == "") return;
+        let add_ref1 = checkData("add_ref1","Please Check ref1...");
+        if(add_ref1 == "") return;
+        let add_ref2 = checkData("add_ref2","Please Check ref2...");
+        if(add_ref2 == "") return;
+
+        const new_data = {
+          weight_unit : add_weight_unit,
+          continue_torque : add_continue_torque,
+          deflection_ref : add_deflection_ref,
+          DBSE_range : add_DBSE_range,
+          maxBore_ref1 : add_maxBore_ref1,
+          maxBore_ref2 : add_maxBore_ref2,
+          priority : add_priority,
+          ref1 : add_ref1,
+          ref2 : add_ref2,
+          is_use : true
+        }
+        console.log(new_data);
+        const ref = doc(db, "models", modelName);
+        const snapshot = await getDoc(ref);
+
+        if (snapshot.exists()) {
+          alert("이미 존재하는 모델명입니다.");
+          return;
+        }
+        const confirmMessage = "모델명은 변경하실수 없습니다. \nModel Name : " + modelName + " \n현재 모델명으로 하십니까?"
+        if(!confirm(confirmMessage)){
+          alert("취소하였습니다.");
+          location.reload();
+          return;
+        }
+
+        try {
+          
+          await setDoc(doc(db, "models", modelName), new_data);
+          if (confirm("정상적으로 추가되었습니다.")) {
+            location.reload();
+          }
+        } catch (error) {
+          alert("추가 실패:");
+          console.error("추가 실패:", error);
+        }
+      }
+
+
+
+
+      window.deleteModel = deleteModel;
+      window.addModel = addModel;
+      window.updateModel = updateModel;
+      window.submitUpdate = submitUpdate;
+      window.updateCancel = updateCancel;
+    </script>
+    <script>
+      // 자동 로그아웃 시간 (예: 5분 = 300초)
+      const AUTO_LOGOUT_SECONDS = 300;
+      let logoutTimer;
+
+      // 타이머 초기화
+      function resetLogoutTimer() {
+        clearTimeout(logoutTimer);
+        logoutTimer = setTimeout(() => {
+          alert("오랜 시간 활동이 없어 자동으로 로그아웃됩니다.");
+          sessionStorage.clear();  // 세션 초기화
+          location.href = "login.html";  // 로그인 페이지로 이동
+        }, AUTO_LOGOUT_SECONDS * 1000);
+      }
+
+      // 사용자 입력 감지 이벤트 설정
+      function setupAutoLogout() {
+        document.addEventListener("mousemove", resetLogoutTimer);
+        document.addEventListener("keydown", resetLogoutTimer);
+        document.addEventListener("click", resetLogoutTimer);
+        document.addEventListener("scroll", resetLogoutTimer);
+        resetLogoutTimer();  // 페이지 로드시 바로 타이머 시작
+      }
+
+      // 페이지 로드 시 실행
+      window.addEventListener("DOMContentLoaded", () => {
+        setupAutoLogout();
+      });
+
+      // 인증 여부 확인
+      const loginId = sessionStorage.getItem("login_id");
+      console.log("login by : ", loginId)
+      if (!loginId) {
+        alert("로그인 후 이용 가능합니다.");
+        window.location.href = "login.html";
+      }
+    </script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+  <!-- <h1 class="text-4xl font-bold mb-1" onclick="location.href='./index.html'">Main</h1> -->
+    <div class="max-w-8xl mx-auto bg-white shadow-md rounded-lg p-6">
+        <h1 class="text-2xl font-bold mb-4">Model List</h1>
+        <button name="update-btn" onclick="location.href='./index.html'" class=" w-24 bg-gray-500 text-white px-5 py-1 my-1 rounded hover:bg-gray-700">to Main</button>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-300" id="modelTable">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">model</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">weight_unit</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">continue_torque</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">deflection_ref</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">DBSE_range</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">maxBore_ref1</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">maxBore_ref2</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">priority</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">ref1</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">ref2</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">update</th>
+                    </tr>
+                </thead>
+                <tbody id="modelList">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+<script>
+  
+</script>
+</html>
