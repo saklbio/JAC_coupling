@@ -258,6 +258,7 @@
 
     function sendMail(){
       const inputJson = JSON.parse(sessionStorage.getItem('inputData'));
+      // console.log(document.getElementById("comment").value)
       emailjs.send("service_10skxr8", "template_lqu8vh8", {
         customer: document.getElementById("customer").value,
         project: document.getElementById("project").value,
@@ -270,7 +271,7 @@
         rpm: document.getElementById("RPM").value,
         distanceBeteewnShaft: document.getElementById("distance").value,
         diagramValue: document.getElementById("diagramValue1").innerText + ", " + document.getElementById("diagramValue2").innerText + ", " + document.getElementById("diagramValue3").innerText + ", " + document.getElementById("diagramValue4").innerText + ", " + document.getElementById("diagramValue5").innerText,
-        comment: document.getElementById("comment").innerText,
+        comment: document.getElementById("comment").value,
         motorPower: inputJson.motorPower,
         motorPowerUnit: sessionStorage.getItem("motorPowerUnit"),
         motorSpeed: inputJson.motorSpeed,
