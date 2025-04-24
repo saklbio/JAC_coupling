@@ -244,7 +244,7 @@
       const db = getFirestore(app);
       const modelNames = [];
       const weightUnit = [];
-      const continue_torque = [];
+      const peak_torque = [];
       const deflection_ref = [];
       const DBSE_range = [];
       const maxBore_ref1 = [];
@@ -263,17 +263,11 @@
         for (let doc of docs) {
           const model = doc.data();
           const result = {};
-          console.log(model);
-          // modelNames.push(doc.id);
-          // weightUnit.push(model.weight_unit);
-          // continue_torque.push(model.continue_torque);
-          // deflection_ref.push(model.deflection_ref);
-          // DBSE_range.push(model.DBSE_range);
-          // maxBore_ref1.push(model.maxBore_ref1);
-          // maxBore_ref2.push(model.maxBore_ref2);
+          // console.log("Model -> ",model);
           modelMap.set(doc.id, {
             weight_unit: model.weight_unit,
             continue_torque: model.continue_torque,
+            peak_torque: model.peak_torque,
             deflection_ref: model.deflection_ref,
             DBSE_range: model.DBSE_range,
             maxBore_ref1: model.maxBore_ref1,
@@ -282,8 +276,10 @@
             ref2: model.ref2
           });
         }
-
-        console.log("🚨 모델 로딩 완료:", modelMap);
+        sessionStorage.clear();
+        console.log("sessionStorage : ", sessionStorage);
+        console.log("🚨 모델 로딩 완료:");
+        console.debug("🚨 모델 로딩 완료:", modelMap);
         return modelMap;
       }
 
@@ -358,56 +354,72 @@
         const BPF2 = BPF1 * 2;
         const BPF3 = BPF1 * 3;
 
+        // 최초적합모델 여부
+        let is_frist = true;
+        let suitableModelCnt = 0;
+        let suitableModels = [];
+
         // [2] modelMap 순회하며 조건 만족 여부 확인
         for (const [modelName, model] of modelMap.entries()) {
-          const weight = 0.0015 * model.weight_unit * input.DBSE * 1e-3 * input.DBSEUnit;
-          const deflection = ((Math.pow((input.DBSE * input.DBSEUnit) / 1000, 3) * 5 * weight) / (384 * 150e8 * model.deflection_ref)) * 1000;
-          const Nb = 946 * Math.sqrt(1 / deflection);
-          const operation_torque = Math.ceil(((input.motorPower * input.motorPowerUnit) / input.motorSpeed) * 9.8) * input.serviceFactor;
-
-          const conditionPass =
+          let weight = 0.0015 * model.weight_unit * input.DBSE * 1e-3 * input.DBSEUnit;
+          let deflection = ((Math.pow((input.DBSE * input.DBSEUnit) / 1000, 3) * 5 * weight) / (384 * 150e8 * model.deflection_ref)) * 1000;
+          let Nb = 946 * Math.sqrt(1 / deflection);
+          let operation_torque = Math.ceil(((input.motorPower * input.motorPowerUnit) / input.motorSpeed) * 9.8) * input.serviceFactor;
+          
+          let conditionPass =
             (input.DBSE * input.DBSEUnit <= model.DBSE_range) &&
             (input.motorShaftDia * input.motorShaftDiaUnit <= model.maxBore_ref2) &&
             (input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref2) &&
-            (operation_torque <= model.continue_torque) &&
+            (operation_torque <= model.peak_torque) &&
             (BPF1 <= Nb * 0.9 || BPF1 >= Nb * 1.05) &&
             (BPF2 <= Nb * 0.9 || BPF2 >= Nb * 1.05) &&
             (BPF3 <= Nb * 0.9 || BPF3 >= Nb * 1.05) &&
             (input.motorSpeed < Nb * 0.75);
 
+          if(conditionPass) suitableModelCnt++;
 
-          if (conditionPass) {
+          if (conditionPass && is_frist) {
             const result = {};
-            result.driver             = input.motorShaftDia * input.motorShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)",
-            result.driven             = input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)",
-            result.spacer             = "CFRP",
-            result.modelName          = `${modelName}${result.driver == "Standard(N)" ? "N" : "U"}${result.driven == "Standard(N)" ? "N" : "U"}`,
-            result.torque             = `${model.continue_torque} Nm = ${Math.round(model.continue_torque * 8.8507)} lbf·in`,
-            result.RPM                = input.motorSpeed,
-            result.distance           = `${formatIfDecimal(input.DBSE)} ${(input.DBSEUnit) == 1 ? "mm" : "inch"}`,
-            result.diagramValue1      = `${formatIfDecimal(input.motorShaftDia)} ${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`,
-            result.diagramValue2      = `${formatIfDecimal(model.ref1)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
-            result.diagramValue3      = `${formatIfDecimal(model.ref2)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
-            result.diagramValue4      = `${formatIfDecimal(input.DBSE)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
-            result.diagramValue5      = `${formatIfDecimal(input.gearboxShaftDia)} ${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`,
-            result.customer           = document.getElementsByName("customer")[0].value,
-            result.project            = document.getElementsByName("projectName")[0].value
-            input.motorPowerUnit      = `${input.motorPowerUnit == 1 ? "mm" : "inch"}`
-            input.motorShaftDiaUnit   = `${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`
-            input.gearboxShaftDiaUnit = `${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`
-            input.DBSEUnit            = `${input.DBSEUnit == 1 ? "mm" : "inch"}`
-            result.inputData = JSON.stringify(input);
+            result.driver               = input.motorShaftDia * input.motorShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)",
+            result.driven               = input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)",
+            result.spacer               = "CFRP",
+            result.modelName            = `${modelName}${result.driver == "Standard(N)" ? "N" : "U"}${result.driven == "Standard(N)" ? "N" : "U"}`,
+            result.torque               = `${model.continue_torque} Nm = ${Math.round(model.peak_torque * 8.8507)} lbf·in`,
+            result.RPM                  = input.motorSpeed,
+            result.distance             = `${formatIfDecimal(input.DBSE)} ${(input.DBSEUnit) == 1 ? "mm" : "inch"}`,
+            result.diagramValue1        = `${formatIfDecimal(input.motorShaftDia)} ${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`,
+            result.diagramValue2        = `${formatIfDecimal(model.ref1)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
+            result.diagramValue3        = `${formatIfDecimal(model.ref2)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
+            result.diagramValue4        = `${formatIfDecimal(input.DBSE)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
+            result.diagramValue5        = `${formatIfDecimal(input.gearboxShaftDia)} ${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`,
+            result.customer             = document.getElementsByName("customer")[0].value,
+            result.project              = document.getElementsByName("projectName")[0].value
+            result.motorPowerUnit       = `${input.motorPowerUnit == 1 ? "kW" : "HP"}`
+            result.motorShaftDiaUnit    = `${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`
+            result.gearboxShaftDiaUnit  = `${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`
+            result.DBSEUnit             = `${input.DBSEUnit == 1 ? "mm" : "inch"}`
+            result.inputData            = JSON.stringify(input);
             // 세션 저장 및 페이지 이동
             for (const [key, val] of Object.entries(result)) {
               sessionStorage.setItem(key, val);
             }
-            console.log(sessionStorage);
-            window.location.href = "result.html";
-            return; // 조건 만족한 경우 종료
+            is_frist = false
+          }else if(conditionPass && !is_frist){
+            suitableModelCnt++;
+            let model_tail_1 = input.motorShaftDia * input.motorShaftDiaUnit <= model.maxBore_ref1 ? "N" : "U";
+            let model_tail_2 = input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref1 ? "N" : "U";
+
+            suitableModels.push(" " + `${modelName}${model_tail_1}${model_tail_2}`);
+            sessionStorage.setItem("suitableModels", suitableModels);
+            sessionStorage.setItem("suitableModelCnt", suitableModelCnt);
           }
         }
 
-        alert("조건을 만족하는 모델이 없습니다.");
+        if(suitableModelCnt > 0){
+          window.location.href = "result.html";
+        }else{
+          alert("조건을 만족하는 모델이 없습니다.");
+        }
       });
 
       function formatIfDecimal(num) {
@@ -417,248 +429,6 @@
 
       
 
-    </script>
-    <script>
-      // function roundTo(num, digits) {
-      //   const factor = Math.pow(10, digits);
-      //   return Math.round(num * factor) / factor;
-      // }
-      // function checkBPF(BPF,index){
-      //     if(BPF1 <= minus10Nic[index] || BPF1 >= plus5Nic[index]){
-      //       return true
-      //     }else{
-      //       return false;
-      //     }
-      // }
-      // //FixValue
-      // const modelNames = [
-      //   "JCT133-70",
-      //   "JCT152-86",
-      //   "JCT152-108",
-      //   "JCT152-159",
-      //   "JCT171-108",
-      //   "JCT171-159",
-      //   "JCT171-210",
-      //   "JCT229-159",
-      //   "JCT229-210",
-      // ];
-      // const weightUnit = [925.98, 1152.18, 1463.2, 2652.29, 1463.2, 2652.29, 3845.31, 2652.29,3845.31,];
-      // const continue_torque = [820, 1243, 1243, 1243, 2045, 2045, 2045, 4090, 4090,];
-      // // const continue_torque = [1229, 1864, 1864, 1864, 3067, 3067, 3067, 6135, 6135, 6135];
-      // const deflection_ref = [
-      //   "4.98931988192478E-07",
-      //   "9.59549161469159E-07",
-      //   "1.96296992803492E-06",
-      //   "7.82176779199197E-06",
-      //   "1.96296992803492E-06",
-      //   "7.82176779199197E-06",
-      //   "0.0000200206034327202",
-      //   "7.82176779199197E-06",
-      //   "0.0000200206034327202",
-      // ];
-      // const DBSE_range    = [2500, 3000, 3900, 4800, 3900, 4800, 5450, 4800, 5450];
-      // const maxBore_ref1  = [55, 70, 70, 70, 80, 80, 80, 105, 105];
-      // const maxBore_ref2  = [65, 85, 85, 85, 100, 100, 100, 130, 130];
-      // //var
-      // let weight = [];
-      // let deflection = [];
-      // let Nb = [];
-      // let Nb_75percnet = [];
-      // let operation_torque = [];
-      // let BPF1 = 0;
-      // let BPF2 = 0;
-      // let BPF3 = 0;
-      // let minus10Nic = [];
-      // let plus5Nic = [];
-      // let result_isOkDBSE = [];
-      // let result_MSD = [];
-      // let result_GSD = [];
-      // let result_isOkTorque = [];
-      // let result_BPF1_judgment = [];
-      // let result_BPF2_judgment = [];
-      // let result_BPF3_judgment = [];
-      // let result_permit_speed_judgment = [];
-      // let result = [];
-
-      // // Search 버튼 클릭 시 빈 input 확인 및 하이라이트 처리
-      // document
-      //   .getElementById("search-btn")
-      //   .addEventListener("click", function () {
-      //     const inputs = document.querySelectorAll(".inputValues");
-      //     let allFilled = true;
-      //     inputs.forEach((input) => {
-      //       input.classList.remove("border-red-500");
-      //       if (input.value.trim() === "") {
-      //         input.classList.add("border-red-500");
-      //         allFilled = false;
-      //       }
-      //     });
-      //     if (!allFilled) {
-      //       alert("Please Enter Value");
-      //       return;
-      //     }
-
-      //     const motorPower = parseFloat(document.getElementsByName("motorPower")[0].value); // E6
-      //     const motorPowerUnit = parseFloat(document.getElementsByName("motorPowerUnit")[0].value);
-      //     const motorSpeed = parseFloat(document.getElementsByName("motorSpeed")[0].value); // E7
-      //     const fanSpeed = parseFloat(document.getElementsByName("fanSpeed")[0].value);
-      //     const motorShaftDia = parseFloat(document.getElementsByName("motorShaftDia")[0].value);
-      //     const motorShaftDiaUnit = parseFloat(document.getElementsByName("motorShaftDiaUnit")[0].value);
-      //     const gearboxShaftDia = parseFloat(document.getElementsByName("gearboxShaftDia")[0].value);
-      //     const gearboxShaftDiaUnit = parseFloat(document.getElementsByName("gearboxShaftDiaUnit")[0].value);
-      //     const numFanBlade = parseFloat(document.getElementsByName("numFanBlade")[0].value);
-      //     const DBSE = parseFloat(document.getElementsByName("DBSE")[0].value);
-      //     const DBSEUnit = parseFloat(document.getElementsByName("DBSEUnit")[0].value);
-      //     const serviceFactor = parseFloat(document.getElementsByName("serviceFactor")[0].value);
-
-      //     // const weight = [],deflection = [],Nb = [],Nb_75percnet = [],minus10Nic = [],plus5Nic = [],isOkDBSE = [],operation_torque = [];
-      //     const BPF1 = fanSpeed * numFanBlade;
-      //     const BPF2 = BPF1 * 2;
-      //     const BPF3 = BPF1 * 3;
-
-      //     for (let i = 0; i < modelNames.length; i++) {
-      //       result[i] = true;
-      //       weight[i] = 0.0015 * weightUnit[i] * DBSE * 1e-3 * DBSEUnit;
-      //       // weight[i] = roundTo(weight[i],2)
-      //       deflection[i] = ((Math.pow((DBSE * DBSEUnit) / 1000, 3) * 5 * weight[i]) / (384 * 150e8 * deflection_ref[i])) * 1000;
-      //       // deflection[i] = roundTo(deflection[i], 3)
-      //       Nb[i] = 946 * Math.sqrt(1/deflection[i]);
-      //       Nb_75percnet[i] = Nb[i] * 0.75;
-      //       operation_torque = Math.ceil(((motorPower * motorPowerUnit) / motorSpeed) * 9.8) * serviceFactor;
-      //       minus10Nic[i] = Nb[i] * 0.9;
-      //       plus5Nic[i] = Nb[i] * 1.05;
-
-      //       // 결과 확인
-      //       result_isOkDBSE[i] = DBSE_range[i] >= DBSE * DBSEUnit;
-      //       let tempValue = motorShaftDia * motorShaftDiaUnit;
-      //       if(tempValue <= maxBore_ref1[i]){
-      //         result_MSD[i] = 'N'
-      //       } else if (tempValue <= maxBore_ref2[i]){
-      //         result_MSD[i] = 'U'
-      //       }else{
-      //         result_MSD[i] = 'X'
-      //         result[i] = false;
-      //       }
-      //       tempValue = gearboxShaftDia * gearboxShaftDiaUnit;
-      //       if(tempValue <= maxBore_ref1[i]){
-      //         result_GSD[i] = 'N'
-      //       } else if (tempValue <= maxBore_ref2[i]){
-      //         result_GSD[i] = 'U'
-      //       }else{
-      //         result_GSD[i] = 'X'
-      //         result[i] = false;
-      //       }
-      //       if(operation_torque <= continue_torque[i]){
-      //         result_isOkTorque[i] = true;
-      //       }else{
-      //         result_isOkTorque[i] = false;
-      //         result[i] = false;
-      //       }
-      //       // isOkTorque[i] = operation_torque[i] <= continue_torque[i]
-
-      //       if (BPF1 <= minus10Nic[i] || BPF1 >= plus5Nic[i]) {
-      //         result_BPF1_judgment[i] = true;
-      //       } else {
-      //         result_BPF1_judgment[i] = false;
-      //         result[i] = false;
-      //       }
-      //       if (BPF2 <= minus10Nic[i] || BPF2 >= plus5Nic[i]) {
-      //         result_BPF2_judgment[i] = true;
-      //       } else {
-      //         result_BPF2_judgment[i] = false;
-      //         result[i] = false;
-      //       }
-      //       if (BPF3 <= minus10Nic[i] || BPF3 >= plus5Nic[i]) {
-      //         result_BPF3_judgment[i] = true;
-      //       } else {
-      //         result_BPF3_judgment[i] = false;
-      //         result[i] = false;
-      //       }
-      //       if(motorSpeed < Nb_75percnet[i]){
-      //         result_permit_speed_judgment[i] = true;
-      //       }else{
-      //         result[i] = false;
-      //       }
-      //     }
-
-      //     console.log("weight:", weight);
-      //     console.log("Deflection:", deflection);
-      //     console.log("Nb:", Nb);
-      //     console.log("75% Nb:", Nb_75percnet);
-      //     console.log("OperationTorque[Nm]:", operation_torque);
-      //     console.log("BPF", BPF1,BPF2,BPF3);
-      //     console.log("±% Nb:", minus10Nic, plus5Nic);
-      //     console.log("DBES:", result_isOkDBSE);
-      //     console.log("MSD : ",result_MSD);
-      //     console.log("GSD : ",result_GSD);
-      //     console.log("isOkTorque : ",result_isOkTorque);
-      //     console.log("BPF1_judgment : ",result_BPF1_judgment);
-      //     console.log("BPF2_judgment : ",result_BPF2_judgment);
-      //     console.log("BPF3_judgment : ",result_BPF3_judgment);
-      //     console.log("permit_speed_judgment : ",result_permit_speed_judgment);
-      //     console.log("====================")
-      //     console.log("result >>> ",result);
-
-      //     // const model_index=-1;
-      //     const result_value=[];
-      //     result_value[0]="";//Driver Hub Type
-      //     result_value[1]="";//Driven Hub Type
-
-      //     result_value[2]="CFRP";//Spacer Material
-      //     result_value[3]="";//Continuous Torque
-      //     for(let i = 0 ; i < modelNames.length; i++){
-      //       if(result[i]){
-      //         // Driven Hub Type
-      //         result_value[0]=result_MSD[i] == "N" ? "Standard(N)" : "Oversized(U)"
-      //         result_value[1]=result_GSD[i] == "N" ? "Standard(N)" : "Oversized(U)"
-      //         // Continuous Torque
-      //         let selectedModel = modelNames[i] + result_MSD[i] + result_GSD[i];
-      //         result_value[3]=selectedModel + continue_torque[i] + " Nm = " +  Math.round(continue_torque[i] * 8.8507) + "lbf·in";//Continuous Torque
-      //         break;
-      //       }
-      //     }
-      //     result_value[4]=motorSpeed;//Operation RPM
-      //     result_value[5]=DBSE + " " + (DBSEUnit == 1 ? "mm" : "inch");//Distance Between Shaft Ends
-
-      //     result_value[6]=motorShaftDia; // 이미지에 드러갈 mm (좌상 기준)
-      //     result_value[7]=DBSEUnit == 1 ? "mm" : "inch"; // 이미지에 드러갈 mm (좌상 기준)
-      //     result_value[8]=DBSEUnit == 1 ? "mm" : "inch"; // 이미지에 드러갈 mm (좌상 기준)
-      //     result_value[9]=DBSE; // 이미지에 드러갈 mm (좌상 기준)
-      //     result_value[10]=gearboxShaftDiaUnit; // 이미지에 드러갈 mm (좌상 기준)
-      //     result_value[11]=document.getElementsByName('customer')[0].value; // 고객
-      //     result_value[12]=document.getElementsByName('projectName')[0].value; // 프로젝트일흠
-
-      //     // sessionStorage.setItem("result",result_value);
-      //     sessionStorage.setItem('driver',result_value[0]);
-      //     sessionStorage.setItem('driven',result_value[1]);
-      //     sessionStorage.setItem('spacer',result_value[2]);
-      //     sessionStorage.setItem('torque',result_value[3]);
-      //     sessionStorage.setItem('RPM',result_value[4]);
-      //     sessionStorage.setItem('distance',result_value[5]);
-      //     sessionStorage.setItem('diagramValue1',result_value[6]);
-      //     sessionStorage.setItem('diagramValue2',result_value[7]);
-      //     sessionStorage.setItem('diagramValue3',result_value[8]);
-      //     sessionStorage.setItem('diagramValue4',result_value[9]);
-      //     sessionStorage.setItem('diagramValue5',result_value[10]);
-      //     sessionStorage.setItem('customer',result_value[11]);
-      //     sessionStorage.setItem('project',result_value[12]);
-      //     window.location.href = "result.html";
-      //   });
-
-      //inputValue
-      // let motorPower      = document.getElementsByName("motorPower");
-      // let motorPowerUnit  = document.getElementsByName("motorPowerUnit")[0].value;
-      // let motorSpeed      = document.getElementsByName("motorSpeed");
-      // let fanSpeed        = document.getElementsByName("fanSpeed")[0].value;;
-      // let motorShaftDia   = document.getElementsByName("motorShaftDia");
-      // let gearboxShaftDia = document.getElementsByName("gearboxShaftDia");
-      // let numFanBlade     = document.getElementsByName("numFanBlade")[0].value;;
-      // let DBSE            = document.getElementsByName("DBSE");             //E12
-      // let DBSEUnit        = document.getElementsByName("DBSEUnit")[0].value;
-      // let serviceFactor   = document.getElementsByName("seviceFactor");
-      // let customer        = document.getElementsByName("customer");
-      // let projectName     = document.getElementsByName("projectName");
-      // Extra F열은 단위임임
     </script>
   </body>
 </html>

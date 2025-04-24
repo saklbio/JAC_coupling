@@ -48,6 +48,7 @@
           let name = doc.id;
           let weight_unit = model.weight_unit;
           let continue_torque = model.continue_torque;
+          let peak_torque = model.peak_torque;
           let deflection_ref = model.deflection_ref;
           let DBSE_range = model.DBSE_range;
           let maxBore_ref1 = model.maxBore_ref1;
@@ -62,6 +63,7 @@
             <td name="${name}_name"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 modelName">${name}</td>
             <td name="${name}_weight_unit"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 weight_unit">${weight_unit}</td>
             <td name="${name}_continue_torque"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 continue_torque">${continue_torque}</td>
+            <td name="${name}_peak_torque"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 peak_torque">${peak_torque}</td>
             <td name="${name}_deflection_ref"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 deflection_ref">${deflection_ref}</td>
             <td name="${name}_DBSE_range"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 DBSE_range">${DBSE_range}</td>
             <td name="${name}_maxBore_ref1"class="h-10 overflow-hidden align-middle px-4 border-b border-gray-300 maxBore_ref1">${maxBore_ref1}</td>
@@ -83,31 +85,34 @@
               <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_modelName" placeholder="Enter modelName" autocomplete="off">
             </td>
             <td class="py-2 px-4 border-b border-gray-300">
-              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_weight_unit" placeholder="Enter weight_unit" autocomplete="off">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_weight_unit" placeholder="Enter Area" autocomplete="off">
             </td>
             <td class="py-2 px-4 border-b border-gray-300">
               <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_continue_torque" placeholder="Enter continue_torque" autocomplete="off">
             </td>
             <td class="py-2 px-4 border-b border-gray-300">
-              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_deflection_ref" placeholder="Enter deflection_ref" autocomplete="off">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_continue_torque" placeholder="Enter Peak_torque" autocomplete="off">
             </td>
             <td class="py-2 px-4 border-b border-gray-300">
-              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_DBSE_range" placeholder="Enter DBSE_range" autocomplete="off">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_deflection_ref" placeholder="Enter I" autocomplete="off">
             </td>
             <td class="py-2 px-4 border-b border-gray-300">
-              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_maxBore_ref1" placeholder="Enter maxBore_ref1" autocomplete="off">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_DBSE_range" placeholder="Enter Max.DBSE" autocomplete="off">
             </td>
             <td class="py-2 px-4 border-b border-gray-300">
-              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_maxBore_ref2" placeholder="Enter maxBore_ref2" autocomplete="off">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_maxBore_ref1" placeholder="Enter MaxBore_motor" autocomplete="off">
+            </td>
+            <td class="py-2 px-4 border-b border-gray-300">
+              <input type="text" class="w-full border border-gray-300 rounded px-2 py-1" id="add_maxBore_ref2" placeholder="Enter MaxBore_GearBox" autocomplete="off">
             </td>
             <td class="py-2 px-4 border-b border-gray-300">
               <input type="number" class="w-full border border-gray-300 rounded px-2 py-1" id="add_priority" placeholder="Enter priority" autocomplete="off">
             </td>
             <td class="py-2 px-4 border-b border-gray-300">
-              <input type="number" class="w-full border border-gray-300 rounded px-2 py-1" id="add_ref1" placeholder="Enter ref1" autocomplete="off">
+              <input type="number" class="w-full border border-gray-300 rounded px-2 py-1" id="add_ref1" placeholder="Enter Flange" autocomplete="off">
             </td>
             <td class="py-2 px-4 border-b border-gray-300">
-              <input type="number" class="w-full border border-gray-300 rounded px-2 py-1" id="add_ref2" placeholder="Enter ref2" autocomplete="off">
+              <input type="number" class="w-full border border-gray-300 rounded px-2 py-1" id="add_ref2" placeholder="Enter Spacer" autocomplete="off">
             </td>
             <td class="py-2 px-4 border-b border-gray-300">
               <button onclick="addModel()"
@@ -397,16 +402,17 @@
             <table class="min-w-full bg-white border border-gray-300" id="modelTable">
                 <thead>
                     <tr>
-                        <th class="py-2 px-4 border-b border-gray-300 text-left">model</th>
-                        <th class="py-2 px-4 border-b border-gray-300 text-left">weight_unit</th>
-                        <th class="py-2 px-4 border-b border-gray-300 text-left">continue_torque</th>
-                        <th class="py-2 px-4 border-b border-gray-300 text-left">deflection_ref</th>
-                        <th class="py-2 px-4 border-b border-gray-300 text-left">DBSE_range</th>
-                        <th class="py-2 px-4 border-b border-gray-300 text-left">maxBore_ref1</th>
-                        <th class="py-2 px-4 border-b border-gray-300 text-left">maxBore_ref2</th>
-                        <th class="py-2 px-4 border-b border-gray-300 text-left">priority</th>
-                        <th class="py-2 px-4 border-b border-gray-300 text-left">ref1</th>
-                        <th class="py-2 px-4 border-b border-gray-300 text-left">ref2</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">Model</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">Area</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">Continue_torque</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">Peak_Torque</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">I</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">Max.DBSE</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">MaxBore_Motor</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">MaxBore_GearBox</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">Priority</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">Flange</th>
+                        <th class="py-2 px-4 border-b border-gray-300 text-left">Spacer</th>
                         <th class="py-2 px-4 border-b border-gray-300 text-left">update</th>
                     </tr>
                 </thead>
