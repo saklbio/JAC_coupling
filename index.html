@@ -384,7 +384,7 @@
             result.driven               = input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)",
             result.spacer               = "CFRP",
             result.modelName            = `${modelName}${result.driver == "Standard(N)" ? "N" : "U"}${result.driven == "Standard(N)" ? "N" : "U"}`,
-            result.torque               = `${model.continue_torque} Nm = ${Math.round(model.peak_torque * 8.8507)} lbf·in`,
+            result.torque               = `${model.continue_torque} Nm = ${Math.ceil((model.continue_torque * 8.8507))} lbf·in`,
             result.RPM                  = input.motorSpeed,
             result.distance             = `${formatIfDecimal(input.DBSE)} ${(input.DBSEUnit) == 1 ? "mm" : "inch"}`,
             result.diagramValue1        = `${formatIfDecimal(input.motorShaftDia)} ${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`,
