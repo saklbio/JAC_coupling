@@ -13,6 +13,10 @@
       body {
         font-family: "Roboto", sans-serif;
       }
+      .flash {
+        background-color: #6aa7f2; 
+        transition: background-color 0.5s ease;
+      }
     </style>
   </head>
   <body class="bg-gray-100 p-8">
@@ -316,7 +320,6 @@
       let result = [];
       let diagramValue2 = "";
       let diagramValue3 = "";
-
       // Search 버튼 클릭 시 빈 input 확인 및 하이라이트 처리
       document.getElementById("search-btn").addEventListener("click", async function () {
         const modelMap = await init(); // key: 모델명, value: 계산용 정보 객체
@@ -380,21 +383,28 @@
 
           if (conditionPass && is_frist) {
             const result = {};
-            result.driver               = input.motorShaftDia * input.motorShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)",
-            result.driven               = input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)",
-            result.spacer               = "CFRP",
-            result.modelName            = `${modelName}${result.driver == "Standard(N)" ? "N" : "U"}${result.driven == "Standard(N)" ? "N" : "U"}`,
-            result.torque               = `${model.continue_torque} Nm = ${Math.ceil((model.continue_torque * 8.8507))} lbf·in`,
-            result.RPM                  = input.motorSpeed,
-            result.distance             = `${formatIfDecimal(input.DBSE)} ${(input.DBSEUnit) == 1 ? "mm" : "inch"}`,
-            result.diagramValue1        = `${formatIfDecimal(input.motorShaftDia)} ${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`,
-            result.diagramValue2        = `${formatIfDecimal(model.ref1)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
-            result.diagramValue3        = `${formatIfDecimal(model.ref2)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
-            result.diagramValue4        = `${formatIfDecimal(input.DBSE)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`,
-            result.diagramValue5        = `${formatIfDecimal(input.gearboxShaftDia)} ${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`,
-            result.customer             = document.getElementsByName("customer")[0].value,
+            result.driver               = input.motorShaftDia * input.motorShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)";
+            result.driven               = input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)";
+            result.spacer               = "CFRP";
+            result.modelName            = `${modelName}${result.driver == "Standard(N)" ? "N" : "U"}${result.driven == "Standard(N)" ? "N" : "U"}`;
+            result.torque               = `${model.continue_torque} Nm = ${Math.ceil((model.continue_torque * 8.8507))} lbf·in`;
+            result.RPM                  = input.motorSpeed;
+            result.distance             = `${formatIfDecimal(input.DBSE)} ${(input.DBSEUnit) == 1 ? "mm" : "inch"}`;
+            result.diagramValue1        = `${formatIfDecimal(input.motorShaftDia)} ${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`;
+            if(input.DBSEUnit !== 1){
+              result.diagramValue2        = `${Math.round(formatIfDecimal(model.ref1) / input.DBSEUnit)} inch`;
+              result.diagramValue3        = `${Math.round(formatIfDecimal(model.ref2) / input.DBSEUnit)} inch`;
+            }else{
+              result.diagramValue2        = `${formatIfDecimal(model.ref1)} mm`;
+              result.diagramValue3        = `${formatIfDecimal(model.ref2)} mm`;
+            }
+            // result.diagramValue2        = `${formatIfDecimal(model.ref1)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`;
+            // result.diagramValue3        = `${formatIfDecimal(model.ref2)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`;
+            result.diagramValue4        = `${formatIfDecimal(input.DBSE)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`;
+            result.diagramValue5        = `${formatIfDecimal(input.gearboxShaftDia)} ${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`;
+            result.customer             = document.getElementsByName("customer")[0].value;
             result.project              = document.getElementsByName("projectName")[0].value
-            result.motorPowerUnit       = `${input.motorPowerUnit == 1 ? "kW" : "HP"}`
+            result.motorPowerUnit       = `${input.motorPowerUnit == 974 ? "kW" : "HP"}`
             result.motorShaftDiaUnit    = `${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`
             result.gearboxShaftDiaUnit  = `${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`
             result.DBSEUnit             = `${input.DBSEUnit == 1 ? "mm" : "inch"}`
@@ -428,7 +438,11 @@
       }
 
       
-
+      window.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("select").forEach(select => {
+          select.setAttribute("data-prev", select.value);
+        });
+      });
     </script>
   </body>
 </html>
