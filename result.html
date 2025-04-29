@@ -154,9 +154,9 @@
         </div>
       </div>
       <div class="mt-6 text-center" id="buttons-div">
-        <button class="bg-blue-500 text-white px-10 py-4 rounded mb-1" onclick="history.back()">Return</button>
-        <button class="bg-yellow-500 text-white px-10 py-4 rounded mb-1" onclick="downloadImage()">Download Image</button>
-        <button class="bg-green-500 text-white px-10 py-4 rounded mb-1" onclick="sendMail()">Send Mail</button>
+        <button id="returnBtn" class="bg-blue-500 text-white px-10 py-4 rounded mb-1" onclick="history.back()">Return</button>
+        <button id="imgDownBtn" class="bg-yellow-500 text-white px-10 py-4 rounded mb-1" onclick="downloadImage()">Download Image</button>
+        <button id="mailBtn" class="bg-green-500 text-white px-10 py-4 rounded mb-1" onclick="sendMail()">Send Mail</button>
       </div>
       <div class="mt-6 text-center">
         <div
@@ -285,11 +285,18 @@
         DBSEUnit: sessionStorage.getItem("DBSEUnit"),
         serviceFactor: inputJson.serviceFactor
       }).then(function(response) {
+        const mailBtn = document.getElementById("mailBtn");
+        mailBtn.classList.remove("bg-green-500");
+        mailBtn.classList.add("bg-gray-500");
+        mailBtn.disabled = true;
         alert("The mail was successfully sent.");
       }, function(error) {
         alert("Failed to send mail.");
         console.log( error.text);
       });
+
+      
+
     }
   </script>
   </body>
