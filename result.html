@@ -16,6 +16,11 @@
       body {
         font-family: "Roboto", sans-serif;
       }
+      
+      #suitableModelsValues > span{
+        cursor: pointer;
+      }
+
     </style>
   </head>
 
@@ -54,7 +59,7 @@
       </div>
       <div class="grid grid-cols" id="suitableModelsDiv">
         <div>
-          <div class="mb-4">
+          <div class="mb-4 ">
             <label class="block font-medium mb-1">Suitable Other Models</label>
             <div class="flex flex-wrap gap-2 p-4 bg-gray-100 rounded-lg" id="suitableModelsValues">
             </div>
@@ -65,7 +70,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <div class="mb-4">
-            <label class="block font-medium mb-1">Driver Hub Type</label>
+            <label class="block font-semibold mb-1">Driver Hub Type</label>
             <div class="flex">
               <input
                 type="text"
@@ -74,10 +79,11 @@
                 readonly
                 value="test_driver"
               />
+              <div id="hidden-driver" class="w-full p-2 hidden imageDiv"></div>
             </div>
           </div>
           <div class="mb-4">
-            <label class="block font-medium mb-1">Driven Hub Type</label>
+            <label class="block font-semibold mb-1">Driven Hub Type</label>
             <div class="flex">
               <input
                 type="text"
@@ -86,10 +92,11 @@
                 readonly
                 value="test_driven"
               />
+              <div id="hidden-driven" class="w-full p-2 hidden imageDiv"></div>
             </div>
           </div>
           <div class="mb-4">
-            <label class="block font-medium mb-1">Spacer Material</label>
+            <label class="block font-semibold mb-1">Spacer Material</label>
             <div class="flex">
               <input
                 type="text"
@@ -98,10 +105,11 @@
                 readonly
                 value="test_spacer"
               />
+              <div id="hidden-spacer" class="w-full p-2 hidden imageDiv"></div>
             </div>
           </div>
           <div class="mb-4">
-            <label class="block font-medium mb-1">Continuous Torque</label>
+            <label class="block font-semibold mb-1">Continuous Torque</label>
             <div class="flex">
               <input
                 type="text"
@@ -110,10 +118,11 @@
                 readonly
                 value="test_torque"
               />
+              <div id="hidden-torque" class="w-full p-2 hidden imageDiv"></div>
             </div>
           </div>
           <div class="mb-4">
-            <label class="block font-medium mb-1">Operation RPM</label>
+            <label class="block font-semibold mb-1">Operation RPM</label>
             <div class="flex">
               <input
                 type="text"
@@ -122,10 +131,11 @@
                 readonly
                 value="test_rpm"
               />
+              <div id="hidden-RPM" class="w-full p-2 hidden imageDiv"></div>
             </div>
           </div>
           <div class="mb-4">
-            <label class="block font-medium mb-1">Distance Between Shaft Ends</label>
+            <label class="block font-semibold mb-1">Distance Between Shaft Ends</label>
             <div class="flex">
               <input
                 type="text"
@@ -134,27 +144,31 @@
                 readonly
                 value="test_distan"
               />
+              <div id="hidden-distance" class="w-full p-2 hidden imageDiv"></div>
             </div>
           </div>
         </div>
         <div>
-          <h2 class="font-bold text-lg">JAC Coupling Inc</h2>
+          <h2 class="font-extrabold text-lg">JAC Coupling Inc</h2>
           <p>Office: 69, Saebyeok-ro, Sasang-gu, Busan, 47018, Korea</p>
           <p>Tel: +82-51-317-0822</p>
-          <h3 class="font-bold mt-4">Inquiry for Quotation</h3>
+          <h3 class="font-extrabold mt-4">Inquiry for Quotation</h3>
           <a href="mailto:jac@jacoup.co.kr" class="text-blue-500">jac@jacoup.co.kr</a>
           <div class="mt-4">
             <label class="block font-medium mb-2">Customer</label>
-            <input id="customer" type="text" class="w-full border border-gray-300 rounded p-2 mb-2" readonly value="test_Customer" />
+            <input id="customer" type="text" class="w-full border border-gray-300 rounded p-2 mb-2 inputValues" readonly value="test_Customer" />
+            <div id="hidden-customer" class="w-full p-2 mb-2 hidden imageDiv"></div>
             <label class="block font-medium mb-2">Project Name</label>
-            <input id="project" type="text" class="w-full border border-gray-300 rounded p-2" readonly value="test_Project" />
+            <input id="project" type="text" class="w-full border border-gray-300 rounded p-2 inputValues" readonly value="test_Project" />
+            <div id="hidden-project" class="w-full p-2 hidden imageDiv"></div>
             <label class="block font-medium mb-2">remark</label>
-            <textarea id="comment" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Please write additional comments here..."></textarea>
+            <textarea id="comment" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 inputValues" placeholder="Please write additional comments here..."></textarea>
+            <div id="hidden-comment" class="block p-2.5 w-full text-sm hidden imageDiv"></div>
           </div>
         </div>
       </div>
       <div class="mt-6 text-center" id="buttons-div">
-        <button id="returnBtn" class="bg-blue-500 text-white px-10 py-4 rounded mb-1" onclick="history.back()">Return</button>
+        <button id="returnBtn" class="bg-blue-500 text-white px-10 py-4 rounded mb-1" onclick="location.href='./index.html'">Return</button>
         <button id="imgDownBtn" class="bg-yellow-500 text-white px-10 py-4 rounded mb-1" onclick="downloadImage()">Download Image</button>
         <button id="mailBtn" class="bg-green-500 text-white px-10 py-4 rounded mb-1" onclick="sendMail()">Send Mail</button>
       </div>
@@ -168,6 +182,12 @@
       </div>
       </div>
     </div>
+    <div id="loading-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="flex flex-col items-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-white border-opacity-75 mb-4"></div>
+        <div class="text-white text-xl">Please wait a moment</div>
+      </div>
+    </div>
     <footer class="bg-gray-200 text-center p-4 mt-8 ">
         <p class="text-sm sm:text-md mb-2">Address : 부산시 사상구 새벽로 69 ( 학장동 720-1 ) (주)중앙 카프링 | 69, Saebyeok-ro, Sasang-gu, Busan, Republic of Korea</p>
         <p class="text-sm sm:text-md mb-2">Tel : 051-317-0822 | Fax : 051-317-0855 | E-mail : <a href="mailto:jac@jacoup.co.kr" class="text-blue-500 hover:underline">jac@jacoup.co.kr</p>
@@ -175,30 +195,38 @@
     </footer>
   <script>
     const inputJson = null;
+    const suitableModels = [];
+    let selectModelIndex = 0;
     window.addEventListener("DOMContentLoaded", () => {
       // inputJson = JSON.parse(sessionStorage.getItem('inputData'));
       document.getElementById('modelName').innerText      = sessionStorage.getItem('modelName') || "";
+      document.getElementById('diagramValue1').innerText  = sessionStorage.getItem('diagramValue1') || "";
+      document.getElementById('diagramValue2').innerText  = sessionStorage.getItem('diagramValue2') || "";
+      document.getElementById('diagramValue3').innerText  = sessionStorage.getItem('diagramValue3') || "";
+      document.getElementById('diagramValue4').innerText  = sessionStorage.getItem('diagramValue4') || "";
+      document.getElementById('diagramValue5').innerText  = sessionStorage.getItem('diagramValue5') || "";
       document.getElementById('driver').value             = sessionStorage.getItem('driver') || "";
       document.getElementById('driven').value             = sessionStorage.getItem('driven') || "";
       document.getElementById('spacer').value             = sessionStorage.getItem('spacer') || "";
       document.getElementById('torque').value             = sessionStorage.getItem('torque') || "";
       document.getElementById('RPM').value                = sessionStorage.getItem('RPM') || "";
       document.getElementById('distance').value           = sessionStorage.getItem('distance') || "";
-      document.getElementById('diagramValue1').innerText  = sessionStorage.getItem('diagramValue1') || "";
-      document.getElementById('diagramValue2').innerText  = sessionStorage.getItem('diagramValue2') || "";
-      document.getElementById('diagramValue3').innerText  = sessionStorage.getItem('diagramValue3') || "";
-      document.getElementById('diagramValue4').innerText  = sessionStorage.getItem('diagramValue4') || "";
-      document.getElementById('diagramValue5').innerText  = sessionStorage.getItem('diagramValue5') || "";
       document.getElementById('customer').value           = sessionStorage.getItem('customer') || "";
       document.getElementById('project').value            = sessionStorage.getItem('project') || "";
 
-      let suitableModels = sessionStorage.getItem('suitableModels') || "";
+      let tempSuitableModels = JSON.parse(sessionStorage.getItem("suitableModels") || "[]");
       let suitableModelCnt = sessionStorage.getItem('suitableModelCnt') || 0;
-      if(suitableModelCnt > 0){
-        suitableModels = suitableModels.split(",");
+      console.debug(suitableModelCnt);
+      if(suitableModelCnt > 1){
+        // suitableModels = suitableModels.split(",");
         let otherModelNames = "";
-        suitableModels.forEach(element => {
-          otherModelNames+=' <span class="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">'+element+'</span>'
+        tempSuitableModels.forEach(function(element,index) {
+          suitableModels.push(element);
+          if(!element.is_frist){
+            otherModelNames+=' <span onclick="clickModel('+index+',this)" class="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full hover:bg-blue-800 hover:text-blue-100">'+element.modelName+'</span>'
+          }else{
+            otherModelNames+=' <span onclick="clickModel('+index+',this)" class="selectModel inline-block bg-blue-800 text-blue-100 text-sm font-medium px-3 py-1 rounded-full hover:bg-blue-800 hover:text-blue-100">'+element.modelName+'</span>'
+          }
         });
         document.getElementById('suitableModelsValues').innerHTML = otherModelNames;
       }else{
@@ -222,21 +250,41 @@
     }
     
      async function downloadImage() {
-      const captureArea = document.getElementById('capture-area');
-      const buttonsDiv = document.getElementById('buttons-div');
-      const diagramValue1 = document.getElementById('diagramValue1');
-      const diagramValue2 = document.getElementById('diagramValue2');
+      
 
-      // 버튼 숨기기
+      const captureArea       = document.getElementById('capture-area');
+      const buttonsDiv        = document.getElementById('buttons-div');
+      const suitableModelsDiv = document.getElementById('suitableModelsDiv');
+      const inputValues       = document.querySelectorAll(".inputValues");
+      const imageDiv          = document.querySelectorAll(".imageDiv");
+
+      const diagramValue1     = document.getElementById('diagramValue1');
+      const diagramValue2     = document.getElementById('diagramValue2');
+
+      const loadingOverlay    = document.getElementById('loading-overlay');
+      //스크롤 이동동
+      window.scrollTo(0, 0);
+      // 로딩창 오픈
+      loadingOverlay.classList.remove("hidden");
+      // 숨길꺼 숨기기거 정리할꺼 정리
       buttonsDiv.classList.add("hidden");
       diagramValue1.classList.add("mb-2");
       diagramValue2.classList.add("mb-2");
+      suitableModelsDiv.classList.add("hidden");
+      inputValues.forEach(el => {
+        el.classList.add("hidden");
+        const hiddenEl = document.querySelector(`#hidden-${el.id}`);
+        if (hiddenEl) hiddenEl.textContent = el.value;
+      });
+      imageDiv.forEach(el => el.classList.remove("hidden"));
+      
+      // STEP 2: 강제 DOM 렌더링 대기 (로딩 포함)
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-      // DOM 업데이트 대기 (CSS 반영 보장)
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      window.scrollTo(0, 0);
-
+      // STEP 3: 캡처 직전에 로딩 숨김 → 캡처 → 바로 다시 표시
+      loadingOverlay.classList.add("hidden");
+      await new Promise(resolve => setTimeout(resolve, 500)); // 로딩 사라짐 반영 대기
+      
       html2canvas(captureArea, {
         useCORS: true,
         backgroundColor: null,
@@ -245,7 +293,7 @@
         scrollY: 0,
       }).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'JAC_coupling_Result_' + getDate() + '.png';
+        link.download = 'JAC_coupling_Result(' + document.getElementsByClassName("selectModel")[0].innerText + ')_' + getDate() + '.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
 
@@ -253,24 +301,33 @@
         buttonsDiv.classList.remove("hidden");
         diagramValue1.classList.remove("mb-2");
         diagramValue2.classList.remove("mb-2");
+        suitableModelsDiv.classList.add("hidden");
+        inputValues.forEach(el => el.classList.remove("hidden"));
+        imageDiv.forEach(el => el.classList.add("hidden"));
       });
     }
 
     function sendMail(){
+      const loadingOverlay = document.getElementById('loading-overlay');
+      loadingOverlay.classList.remove("hidden");
+
       const inputJson = JSON.parse(sessionStorage.getItem('inputData'));
-      // console.log(document.getElementById("comment").value)
+      const suitableModelNameAry = [];
+      for (let index = 0; index < suitableModels.length; index++) {
+        const element = suitableModels[index];
+        suitableModelNameAry.push(element.modelName );
+      }
       emailjs.send("service_10skxr8", "template_lqu8vh8", {
         customer: document.getElementById("customer").value,
         project: document.getElementById("project").value,
         modelName: document.getElementById("modelName").innerText,
-        suitableModels: sessionStorage.getItem('suitableModels'),
+        suitableModels: suitableModelNameAry.join(),
         driverHubType: document.getElementById("driver").value,
         drivenHubType: document.getElementById("driven").value,
         spacerMaterial: document.getElementById("spacer").value,
         continuousTorque: document.getElementById("torque").value,
         rpm: document.getElementById("RPM").value,
         distanceBeteewnShaft: document.getElementById("distance").value,
-        diagramValue: document.getElementById("diagramValue1").innerText + ", " + document.getElementById("diagramValue2").innerText + ", " + document.getElementById("diagramValue3").innerText + ", " + document.getElementById("diagramValue4").innerText + ", " + document.getElementById("diagramValue5").innerText,
         comment: document.getElementById("comment").value,
         motorPower: inputJson.motorPower,
         motorPowerUnit: sessionStorage.getItem("motorPowerUnit"),
@@ -289,15 +346,41 @@
         mailBtn.classList.remove("bg-green-500");
         mailBtn.classList.add("bg-gray-500");
         mailBtn.disabled = true;
+        loadingOverlay.classList.add("hidden");
         alert("The mail was successfully sent.");
       }, function(error) {
         alert("Failed to send mail.");
         console.log( error.text);
       });
-
-      
-
     }
+
+    function clickModel(index,el){
+      let selectedModel = document.getElementsByClassName("selectModel")[0]
+      selectedModel.classList.remove("selectModel");
+      selectedModel.classList.remove("bg-blue-800");
+      selectedModel.classList.remove("text-blue-100");
+      selectedModel.classList.add("bg-blue-100");
+      selectedModel.classList.add("text-blue-800");
+      el.classList.remove("bg-blue-100");
+      el.classList.remove("text-blue-800");
+      el.classList.add("bg-blue-800");
+      el.classList.add("text-blue-100");
+      el.classList.add("selectModel");
+      let selectModel = suitableModels[index];
+      document.getElementById('modelName').innerText      = selectModel.modelName;
+      document.getElementById('diagramValue1').innerText  = selectModel.diagramValue1;
+      document.getElementById('diagramValue2').innerText  = selectModel.diagramValue2;
+      document.getElementById('diagramValue3').innerText  = selectModel.diagramValue3;
+      document.getElementById('diagramValue4').innerText  = selectModel.diagramValue4;
+      document.getElementById('diagramValue5').innerText  = selectModel.diagramValue5;
+      document.getElementById('driver').value             = selectModel.driver;
+      document.getElementById('driven').value             = selectModel.driven;
+      document.getElementById('spacer').value             = selectModel.spacer;
+      document.getElementById('torque').value             = selectModel.torque;
+      document.getElementById('RPM').value                = selectModel.RPM;
+      document.getElementById('distance').value           = selectModel.distance;
+    }
+
   </script>
   </body>
 </html>
