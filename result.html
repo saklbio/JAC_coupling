@@ -220,11 +220,11 @@
       let suitableModelCnt = sessionStorage.getItem('suitableModelCnt') || 0;
       // inputJson = JSON.parse(sessionStorage.getItem('inputData'));
       document.getElementById('modelName').innerText      = tempSuitableModels[0].modelName;
-      document.getElementById('diagramValue1').innerText  = sessionStorage.getItem('diagramValue1') || "";
-      document.getElementById('diagramValue2').innerText  = sessionStorage.getItem('diagramValue2') || "";
-      document.getElementById('diagramValue3').innerText  = sessionStorage.getItem('diagramValue3') || "";
-      document.getElementById('diagramValue4').innerText  = sessionStorage.getItem('diagramValue4') || "";
-      document.getElementById('diagramValue5').innerText  = sessionStorage.getItem('diagramValue5') || "";
+      document.getElementById('diagramValue1').innerText  = tempSuitableModels[0].diagramValue1;
+      document.getElementById('diagramValue2').innerText  = tempSuitableModels[0].diagramValue2;
+      document.getElementById('diagramValue3').innerText  = tempSuitableModels[0].diagramValue3;
+      document.getElementById('diagramValue4').innerText  = tempSuitableModels[0].diagramValue4;
+      document.getElementById('diagramValue5').innerText  = tempSuitableModels[0].diagramValue5;
       document.getElementById('driver').value             = sessionStorage.getItem('driver') || "";
       document.getElementById('driven').value             = sessionStorage.getItem('driven') || "";
       // document.getElementById('spacer').value             = sessionStorage.getItem('spacer') || "";
