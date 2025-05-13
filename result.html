@@ -177,12 +177,12 @@
             <label class="block font-medium mb-2">Project Name</label>
             <input id="project" type="text" class="w-full border border-gray-300 rounded p-2 inputValues" readonly value="test_Project" />
             <div id="hidden-project" class="w-full p-2 hidden imageDiv"></div>
-            <label class="block font-medium mb-2">remark</label>
+            <label class="block font-medium mb-2">Remark</label>
             <textarea id="comment" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 inputValues" placeholder="Please write additional comments here..."></textarea>
             <div id="hidden-comment" class="block p-2.5 w-full text-sm hidden imageDiv"></div>
           </div>
           <p>당사의 표준 외 사양은 별도로 문의 부탁드립니다.</p>
-          <p>For customied type, consult JAC.</p>
+          <p>For customised type, consult JAC.</p>
         </div>
       </div>
       <div class="mt-6 text-center" id="buttons-div">
@@ -216,8 +216,10 @@
     const suitableModels = [];
     let selectModelIndex = 0;
     window.addEventListener("DOMContentLoaded", () => {
+      let tempSuitableModels = JSON.parse(sessionStorage.getItem("suitableModels") || "[]");
+      let suitableModelCnt = sessionStorage.getItem('suitableModelCnt') || 0;
       // inputJson = JSON.parse(sessionStorage.getItem('inputData'));
-      document.getElementById('modelName').innerText      = sessionStorage.getItem('modelName') || "";
+      document.getElementById('modelName').innerText      = tempSuitableModels[0].modelName;
       document.getElementById('diagramValue1').innerText  = sessionStorage.getItem('diagramValue1') || "";
       document.getElementById('diagramValue2').innerText  = sessionStorage.getItem('diagramValue2') || "";
       document.getElementById('diagramValue3').innerText  = sessionStorage.getItem('diagramValue3') || "";
@@ -232,8 +234,7 @@
       document.getElementById('customer').value           = sessionStorage.getItem('customer') || "";
       document.getElementById('project').value            = sessionStorage.getItem('project') || "";
 
-      let tempSuitableModels = JSON.parse(sessionStorage.getItem("suitableModels") || "[]");
-      let suitableModelCnt = sessionStorage.getItem('suitableModelCnt') || 0;
+     
       console.debug(suitableModelCnt);
       if(suitableModelCnt > 1){
         // suitableModels = suitableModels.split(",");
@@ -393,7 +394,7 @@
       document.getElementById('diagramValue5').innerText  = selectModel.diagramValue5;
       document.getElementById('driver').value             = selectModel.driver;
       document.getElementById('driven').value             = selectModel.driven;
-      document.getElementById('spacer').value             = selectModel.spacer;
+      // document.getElementById('spacer').value             = selectModel.spacer;
       document.getElementById('torque').value             = selectModel.torque;
       document.getElementById('RPM').value                = selectModel.RPM;
       document.getElementById('distance').value           = selectModel.distance;
