@@ -225,12 +225,12 @@
       document.getElementById('diagramValue3').innerText  = tempSuitableModels[0].diagramValue3;
       document.getElementById('diagramValue4').innerText  = tempSuitableModels[0].diagramValue4;
       document.getElementById('diagramValue5').innerText  = tempSuitableModels[0].diagramValue5;
-      document.getElementById('driver').value             = sessionStorage.getItem('driver') || "";
-      document.getElementById('driven').value             = sessionStorage.getItem('driven') || "";
+      document.getElementById('driver').value             = tempSuitableModels[0].driver;
+      document.getElementById('driven').value             = tempSuitableModels[0].driven;
       // document.getElementById('spacer').value             = sessionStorage.getItem('spacer') || "";
-      document.getElementById('torque').value             = sessionStorage.getItem('torque') || "";
-      document.getElementById('RPM').value                = sessionStorage.getItem('RPM') || "";
-      document.getElementById('distance').value           = sessionStorage.getItem('distance') || "";
+      document.getElementById('torque').value             = tempSuitableModels[0].torque;
+      document.getElementById('RPM').value                = tempSuitableModels[0].RPM;
+      document.getElementById('distance').value           = tempSuitableModels[0].distance;
       document.getElementById('customer').value           = sessionStorage.getItem('customer') || "";
       document.getElementById('project').value            = sessionStorage.getItem('project') || "";
 
