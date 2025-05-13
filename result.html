@@ -26,7 +26,7 @@
 
   <body class="bg-gray-100 p-8">
     <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6" id="capture-area">
-      <div class="relative mx-auto w-fit max-w-3xl text-sm md:text-md font-bold text-blue-500">
+      <div class="relative mx-auto w-fit max-w-3xl text-sm md:text-md font-bold text-blue-500 mb-6">
         <h1 class="text-4xl font-bold text-left text-gray-800 mb-6" id="modelName">modelName</h1>
         <!-- <h4 class="text-sm font-bold text-left text-gray-800 mb-6" id="suitableModels">suitableModels</h4> -->
         <!-- <img src="D:\개인\중앙 카플링\resultIMG.png" alt="Coupling Diagram" class="w-full h-auto" /> -->
@@ -95,18 +95,34 @@
               <div id="hidden-driven" class="w-full p-2 hidden imageDiv"></div>
             </div>
           </div>
-          <div class="mb-4">
-            <label class="block font-semibold mb-1">Spacer Material</label>
-            <div class="flex">
-              <input
-                type="text"
-                class="w-full border border-gray-300 p-2 rounded inputValues"
-                id="spacer"
-                readonly
-                value="test_spacer"
-              />
-              <div id="hidden-spacer" class="w-full p-2 hidden imageDiv"></div>
+          <div class="mb-4 flex gap-2">
+            <div class="w-1/2">
+              <label class="block font-semibold mb-1">Spacer Material</label>
+              <div class="flex">
+                <input
+                  type="text"
+                  class="w-full border border-gray-300 p-2 rounded inputValues"
+                  id="spacer"
+                  readonly
+                  value="CFRP"
+                />
+                <div id="hidden-spacer" class="w-full p-2 hidden imageDiv">CFRP</div>
+              </div>
             </div>
+            <div class="w-1/2">
+              <label class="block font-semibold mb-1">Hub Material</label>
+              <div class="flex">
+                <input
+                  type="text"
+                  class="w-full border border-gray-300 p-2 rounded inputValues"
+                  id="hub-material"
+                  readonly
+                  value="STS304"
+                />
+                <div id="hidden-spacer" class="w-full p-2 hidden imageDiv">STS304</div>
+              </div>
+            </div>
+            
           </div>
           <div class="mb-4">
             <label class="block font-semibold mb-1">Continuous Torque</label>
@@ -165,6 +181,8 @@
             <textarea id="comment" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 inputValues" placeholder="Please write additional comments here..."></textarea>
             <div id="hidden-comment" class="block p-2.5 w-full text-sm hidden imageDiv"></div>
           </div>
+          <p>당사의 표준 외 사양은 별도로 문의 부탁드립니다.</p>
+          <p>For customied type, consult JAC.</p>
         </div>
       </div>
       <div class="mt-6 text-center" id="buttons-div">
@@ -207,7 +225,7 @@
       document.getElementById('diagramValue5').innerText  = sessionStorage.getItem('diagramValue5') || "";
       document.getElementById('driver').value             = sessionStorage.getItem('driver') || "";
       document.getElementById('driven').value             = sessionStorage.getItem('driven') || "";
-      document.getElementById('spacer').value             = sessionStorage.getItem('spacer') || "";
+      // document.getElementById('spacer').value             = sessionStorage.getItem('spacer') || "";
       document.getElementById('torque').value             = sessionStorage.getItem('torque') || "";
       document.getElementById('RPM').value                = sessionStorage.getItem('RPM') || "";
       document.getElementById('distance').value           = sessionStorage.getItem('distance') || "";
@@ -251,7 +269,7 @@
     
      async function downloadImage() {
       
-
+      const modelName         = document.getElementsByClassName("selectModel")[0].innerText || "unkownun";
       const captureArea       = document.getElementById('capture-area');
       const buttonsDiv        = document.getElementById('buttons-div');
       const suitableModelsDiv = document.getElementById('suitableModelsDiv');
@@ -293,7 +311,7 @@
         scrollY: 0,
       }).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'JAC_coupling_Result(' + document.getElementsByClassName("selectModel")[0].innerText + ')_' + getDate() + '.png';
+        link.download = 'JAC_coupling_Result(' + modelName + ')_' + getDate() + '.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
 

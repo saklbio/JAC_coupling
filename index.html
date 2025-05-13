@@ -386,7 +386,7 @@
           const result = {};
           result.driver               = input.motorShaftDia * input.motorShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)";
           result.driven               = input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)";
-          result.spacer               = "CFRP";
+          // result.spacer               = "CFRP";
           result.modelName            = `${modelName}${result.driver == "Standard(N)" ? "N" : "U"}${result.driven == "Standard(N)" ? "N" : "U"}`;
           result.torque               = `${model.continue_torque} Nm = ${Math.ceil((model.continue_torque * 8.8507))} lbf·in`;
           result.RPM                  = input.motorSpeed;
