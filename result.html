@@ -336,6 +336,32 @@
         const element = suitableModels[index];
         suitableModelNameAry.push(element.modelName );
       }
+      let count = 0;
+      // console.log("================ mail info ================");
+      // console.log(++count,document.getElementById("customer").value);
+      // console.log(++count,document.getElementById("project").value);
+      // console.log(++count,document.getElementById("modelName").innerText);
+      // console.log(++count,suitableModelNameAry.join());
+      // console.log(++count,document.getElementById("driver").value);
+      // console.log(++count,document.getElementById("driven").value);
+      // console.log(++count,document.getElementById("spacer").value);
+      // console.log(++count,document.getElementById("hub-material").value);
+      // console.log(++count,document.getElementById("torque").value);
+      // console.log(++count,document.getElementById("RPM").value);
+      // console.log(++count,document.getElementById("distance").value);
+      // console.log(++count,document.getElementById("comment").value);
+      // console.log(++count,inputJson.motorPower);
+      // console.log(++count,sessionStorage.getItem("motorPowerUnit"));
+      // console.log(++count,inputJson.motorSpeed);
+      // console.log(++count,inputJson.fanSpeed);
+      // console.log(++count,inputJson.motorShaftDia);
+      // console.log(++count,sessionStorage.getItem("motorShaftDiaUnit"));
+      // console.log(++count,inputJson.gearboxShaftDia);
+      // console.log(++count,sessionStorage.getItem("gearboxShaftDiaUnit"));
+      // console.log(++count,inputJson.numFanBlade);
+      // console.log(++count,inputJson.DBSE);
+      // console.log(++count,sessionStorage.getItem("DBSEUnit"));
+      // console.log(++count,inputJson.serviceFactor);
       emailjs.send("service_10skxr8", "template_lqu8vh8", {
         customer: document.getElementById("customer").value,
         project: document.getElementById("project").value,
@@ -365,12 +391,13 @@
         mailBtn.classList.remove("bg-green-500");
         mailBtn.classList.add("bg-gray-500");
         mailBtn.disabled = true;
-        loadingOverlay.classList.add("hidden");
+        // loadingOverlay.classList.add("hidden");
         alert("The mail was successfully sent.");
       }, function(error) {
         alert("Failed to send mail.");
         console.log( error.text);
       });
+      loadingOverlay.classList.add("hidden");
     }
 
     function clickModel(index,el){
