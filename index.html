@@ -275,11 +275,13 @@
       async function init() {
         const selectQuery = query(
           collection(db, "models"),
-          where("is_use", "==", true),
-          orderBy("priority", "asc")
+          where("is_use", "==", true)
         );
         const originDocs = await getDocs(selectQuery);
-        const docs = [...originDocs.docs].sort((a, b) => a.id.localeCompare(b.id));
+        // const docs = [...originDocs.docs].sort((a, b) => a.id.localeCompare(b.id));
+        const docs = [...originDocs.docs].sort((a, b) => {
+          return parseInt(a.data().priority ?? '9999', 10) - parseInt(b.data().priority ?? '9999', 10);
+        });
         const modelMap = new Map();
         for (let doc of docs) {
           const model = doc.data();
@@ -397,9 +399,9 @@
         let is_frist = true;
         let suitableModelCnt = 0;
         
-
         // [2] modelMap 순회하며 조건 만족 여부 확인
         for (const [modelName, model] of modelMap.entries()) {
+          console.log(modelName)
           let weight = 0.0015 * model.weight_unit * input.DBSE * 1e-3 * input.DBSEUnit;
           let deflection = ((Math.pow((input.DBSE * input.DBSEUnit) / 1000, 3) * 5 * weight) / (384 * 150e8 * model.deflection_ref)) * 1000;
           let Nb = 946 * Math.sqrt(1 / deflection);
@@ -434,8 +436,6 @@
             result.diagramValue2        = `${formatIfDecimal(model.ref1)} mm`;
             result.diagramValue3        = `${formatIfDecimal(model.ref2)} mm`;
           }
-          // result.diagramValue2        = `${formatIfDecimal(model.ref1)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`;
-          // result.diagramValue3        = `${formatIfDecimal(model.ref2)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`;
           result.diagramValue4        = `${formatIfDecimal(input.DBSE)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`;
           result.diagramValue5        = `${formatIfDecimal(input.gearboxShaftDia)} ${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`;
           result.customer             = document.getElementsByName("customer")[0].value;
@@ -444,8 +444,8 @@
           result.motorShaftDiaUnit    = `${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`;
           result.gearboxShaftDiaUnit  = `${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`;
           result.DBSEUnit             = `${input.DBSEUnit == 1 ? "mm" : "inch"}`;
-          // result.inputData            = JSON.stringify(input);
           result.is_frist             = is_frist;
+          // result.inputData            = JSON.stringify(input);
           // 세션 저장 및 페이지 이동
           // for (const [key, val] of Object.entries(result)) {
           //   sessionStorage.setItem(key, val);
@@ -454,66 +454,6 @@
           suitableModels.push(result);
           is_frist = false
 
-          // if (is_frist) {
-          //   const result = {};
-          //   result.driver               = input.motorShaftDia * input.motorShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)";
-          //   result.driven               = input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref1 ? "Standard(N)" : "Oversized(U)";
-          //   result.spacer               = "CFRP";
-          //   result.modelName            = `${modelName}${result.driver == "Standard(N)" ? "N" : "U"}${result.driven == "Standard(N)" ? "N" : "U"}`;
-          //   result.torque               = `${model.continue_torque} Nm = ${Math.ceil((model.continue_torque * 8.8507))} lbf·in`;
-          //   result.RPM                  = input.motorSpeed;
-          //   result.distance             = `${formatIfDecimal(input.DBSE)} ${(input.DBSEUnit) == 1 ? "mm" : "inch"}`;
-          //   result.diagramValue1        = `${formatIfDecimal(input.motorShaftDia)} ${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`;
-          //   if(input.DBSEUnit !== 1){
-          //     result.diagramValue2        = `${Math.round(formatIfDecimal(model.ref1) / input.DBSEUnit)} inch`;
-          //     result.diagramValue3        = `${Math.round(formatIfDecimal(model.ref2) / input.DBSEUnit)} inch`;
-          //   }else{
-          //     result.diagramValue2        = `${formatIfDecimal(model.ref1)} mm`;
-          //     result.diagramValue3        = `${formatIfDecimal(model.ref2)} mm`;
-          //   }
-          //   // result.diagramValue2        = `${formatIfDecimal(model.ref1)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`;
-          //   // result.diagramValue3        = `${formatIfDecimal(model.ref2)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`;
-          //   result.diagramValue4        = `${formatIfDecimal(input.DBSE)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`;
-          //   result.diagramValue5        = `${formatIfDecimal(input.gearboxShaftDia)} ${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`;
-          //   result.customer             = document.getElementsByName("customer")[0].value;
-          //   result.project              = document.getElementsByName("projectName")[0].value
-          //   result.motorPowerUnit       = `${input.motorPowerUnit == 974 ? "kW" : "HP"}`
-          //   result.motorShaftDiaUnit    = `${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`
-          //   result.gearboxShaftDiaUnit  = `${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`
-          //   result.DBSEUnit             = `${input.DBSEUnit == 1 ? "mm" : "inch"}`
-          //   result.inputData            = JSON.stringify(input);
-          //   // 세션 저장 및 페이지 이동
-          //   for (const [key, val] of Object.entries(result)) {
-          //     sessionStorage.setItem(key, val);
-          //   }
-          //   pushSuitModel(result.modelName,result.diagramValue1,result.diagramValue2,result.diagramValue3,result.diagramValue4,result.diagramValue5,is_frist);
-
-          //   is_frist = false
-          // }else{
-            
-          //   let suitModel = {};
-          //   let model_tail_1 = input.motorShaftDia * input.motorShaftDiaUnit <= model.maxBore_ref1 ? "N" : "U";
-          //   let model_tail_2 = input.gearboxShaftDia * input.gearboxShaftDiaUnit <= model.maxBore_ref1 ? "N" : "U";
-            
-          //   let diagramValue1 = `${formatIfDecimal(input.motorShaftDia)} ${input.motorShaftDiaUnit == 1 ? "mm" : "inch"}`;
-          //   let diagramValue2, diagramValue3, diagramValue4, diagramValue5;
-
-          //   if(input.DBSEUnit !== 1){
-          //     diagramValue2        = `${Math.round(formatIfDecimal(model.ref1) / input.DBSEUnit)} inch`;
-          //     diagramValue3        = `${Math.round(formatIfDecimal(model.ref2) / input.DBSEUnit)} inch`;
-          //   }else{
-          //     diagramValue2        = `${formatIfDecimal(model.ref1)} mm`;
-          //     diagramValue3        = `${formatIfDecimal(model.ref2)} mm`;
-          //   }
-          //   diagramValue4        = `${formatIfDecimal(input.DBSE)} ${input.DBSEUnit == 1 ? "mm" : "inch"}`;
-          //   diagramValue5        = `${formatIfDecimal(input.gearboxShaftDia)} ${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`;
-            
-            
-          //   let suitModelName = `${modelName}${model_tail_1}${model_tail_2}`;
-          //   // suitableModels.push(" " + `${modelName}${model_tail_1}${model_tail_2}`);
-          //   // suitableModels.push(suitModel);
-          //   pushSuitModel(suitModelName,diagramValue1,diagramValue2,diagramValue3,diagramValue4,diagramValue5,is_frist);
-          // }
         }
         
         sessionStorage.setItem("inputData", JSON.stringify(input));
@@ -523,7 +463,7 @@
         sessionStorage.setItem("project",   document.getElementsByName("projectName")[0].value);
         sessionStorage.setItem("tel",       document.getElementsByName("tel")[0].value);
         sessionStorage.setItem("mail",      document.getElementsByName("mail")[0].value);
-        sessionStorage.setItem("tel",      document.getElementsByName("tel")[0].value);
+        sessionStorage.setItem("tel",       document.getElementsByName("tel")[0].value);
         // if(validateEmail()){
         //   sessionStorage.setItem("mail",      document.getElementsByName("mail")[0].value);
         // }else{
