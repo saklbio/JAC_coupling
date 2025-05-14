@@ -278,7 +278,6 @@
           where("is_use", "==", true)
         );
         const originDocs = await getDocs(selectQuery);
-        // const docs = [...originDocs.docs].sort((a, b) => a.id.localeCompare(b.id));
         const docs = [...originDocs.docs].sort((a, b) => {
           return parseInt(a.data().priority ?? '9999', 10) - parseInt(b.data().priority ?? '9999', 10);
         });
@@ -312,27 +311,6 @@
         if (BPF1 <= minus10Nic[index] || BPF1 >= plus5Nic[index]) {
           return true;
         } else {
-          return false;
-        }
-      }
-      function validateEmail() {
-        const email = document.getElementsByName('mail')[0].value;
-        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-        
-        if (emailRegex.test(email)) {
-          return true;
-        } else {
-          alert('올바르지 않은 이메일 형식입니다.');
-          return false;
-        }
-      }
-      function validateTel() {
-        const phone = document.getElementsByName('tel')[0].value;
-        const phoneRegex = /^(01[0-9][-.]?\d{3,4}[.-]?\d{4}|0\d{1,2}[.-]?\d{3,4}[.-]?\d{4})$/;
-        if (phoneRegex.test(phone)) {
-          return true;
-        } else {
-          alert('올바르지 않은 연락처 형식입니다.');
           return false;
         }
       }
@@ -445,12 +423,6 @@
           result.gearboxShaftDiaUnit  = `${input.gearboxShaftDiaUnit == 1 ? "mm" : "inch"}`;
           result.DBSEUnit             = `${input.DBSEUnit == 1 ? "mm" : "inch"}`;
           result.is_frist             = is_frist;
-          // result.inputData            = JSON.stringify(input);
-          // 세션 저장 및 페이지 이동
-          // for (const [key, val] of Object.entries(result)) {
-          //   sessionStorage.setItem(key, val);
-          // }
-          // pushSuitModel(result.modelName,result.diagramValue1,result.diagramValue2,result.diagramValue3,result.diagramValue4,result.diagramValue5,is_frist);
           suitableModels.push(result);
           is_frist = false
 
@@ -464,24 +436,6 @@
         sessionStorage.setItem("tel",       document.getElementsByName("tel")[0].value);
         sessionStorage.setItem("mail",      document.getElementsByName("mail")[0].value);
         sessionStorage.setItem("tel",       document.getElementsByName("tel")[0].value);
-        // if(validateEmail()){
-        //   sessionStorage.setItem("mail",      document.getElementsByName("mail")[0].value);
-        // }else{
-        //   document.getElementsByName("mail")[0].focus();
-        //   return;
-        // }
-        // if(validateTel()){
-        //   sessionStorage.setItem("tel",      document.getElementsByName("tel")[0].value);
-        // }else{
-        //   document.getElementsByName("tel")[0].focus();
-        //   return;
-        // }
-        // console.log("======= sessionStorage ===========");
-        // for (let i = 0; i < sessionStorage.length; i++) {
-        //     const key = sessionStorage.key(i);
-        //     const value = sessionStorage.getItem(key);
-        //     console.log(`Key: ${key}, Value: ${value}`);
-        // }
 
         if(suitableModelCnt > 0){
           window.location.href = "./result.html";
@@ -494,18 +448,6 @@
         num = Number(num);
         return Number.isInteger(num) ? num : parseFloat(num.toFixed(2));
       }
-
-      // function pushSuitModel(name, val1, val2, val3, val4, val5, is_frist){
-      //   suitableModels.push({
-      //     modelName: name,
-      //     diagramValue1: val1,
-      //     diagramValue2: val2,
-      //     diagramValue3: val3,
-      //     diagramValue4: val4,
-      //     diagramValue5: val5,
-      //     is_frist: !!is_frist // falsy 값이면 false 처리 (undefined, null, "", 0, false)
-      //   });
-      // }
 
       
       window.addEventListener("DOMContentLoaded", () => {
