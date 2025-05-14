@@ -315,7 +315,7 @@
       }
       function validateEmail() {
         const email = document.getElementsByName('mail')[0].value;
-        const emailRegex = /^(01[0-9][-.]?\d{3,4}[.-]?\d{4}|0\d{1,2}[.-]?\d{3,4}[.-]?\d{4})$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         
         if (emailRegex.test(email)) {
           return true;
@@ -326,7 +326,7 @@
       }
       function validateTel() {
         const phone = document.getElementsByName('tel')[0].value;
-        const phoneRegex = /^(01[0-9]-?\d{3,4}-?\d{4}|0\d{1,2}-?\d{3,4}-?\d{4})$/;
+        const phoneRegex = /^(01[0-9][-.]?\d{3,4}[.-]?\d{4}|0\d{1,2}[.-]?\d{3,4}[.-]?\d{4})$/;
         if (phoneRegex.test(phone)) {
           return true;
         } else {
