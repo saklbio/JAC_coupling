@@ -228,11 +228,11 @@
         &copy; 2025 JAC Coupling All rights Reserved.
       </p>
       <a
-        href="login.html"
-        class="text-gray-300 hover:text-blue-500 text-xs block mt-1"
-        style="opacity: 0.3"
-        onmouseover="this.style.opacity='1'"
-        onmouseout="this.style.opacity='0.3'"
+      href="login.html"
+      class="text-gray-300 hover:text-blue-500 text-xs block mt-1"
+      style="opacity: 0.3"
+      onmouseover="this.style.opacity='1'"
+      onmouseout="this.style.opacity='0.3'"
       >
         관리자 로그인
       </a>
@@ -522,18 +522,20 @@
         sessionStorage.setItem("customer",  document.getElementsByName("customer")[0].value);
         sessionStorage.setItem("project",   document.getElementsByName("projectName")[0].value);
         sessionStorage.setItem("tel",       document.getElementsByName("tel")[0].value);
-        if(validateEmail()){
-          sessionStorage.setItem("mail",      document.getElementsByName("mail")[0].value);
-        }else{
-          document.getElementsByName("mail")[0].focus();
-          return;
-        }
-        if(validateTel()){
-          sessionStorage.setItem("tel",      document.getElementsByName("tel")[0].value);
-        }else{
-          document.getElementsByName("tel")[0].focus();
-          return;
-        }
+        sessionStorage.setItem("mail",      document.getElementsByName("mail")[0].value);
+        sessionStorage.setItem("tel",      document.getElementsByName("tel")[0].value);
+        // if(validateEmail()){
+        //   sessionStorage.setItem("mail",      document.getElementsByName("mail")[0].value);
+        // }else{
+        //   document.getElementsByName("mail")[0].focus();
+        //   return;
+        // }
+        // if(validateTel()){
+        //   sessionStorage.setItem("tel",      document.getElementsByName("tel")[0].value);
+        // }else{
+        //   document.getElementsByName("tel")[0].focus();
+        //   return;
+        // }
         // console.log("======= sessionStorage ===========");
         // for (let i = 0; i < sessionStorage.length; i++) {
         //     const key = sessionStorage.key(i);
