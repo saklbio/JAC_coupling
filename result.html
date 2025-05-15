@@ -10,6 +10,7 @@
       rel="stylesheet"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
@@ -197,7 +198,8 @@
         <p>당사의 표준 외 사양은 별도로 문의 부탁드립니다.</p>
         <p class="mb-6">For customised type, consult JAC.</p>
         <button id="returnBtn" class="bg-blue-500 text-white px-10 py-4 rounded mb-1" onclick="history.back()">Return</button>
-        <button id="imgDownBtn" class="bg-yellow-500 text-white px-10 py-4 rounded mb-1" onclick="downloadImage()">Download Image</button>
+        <!-- <button id="imgDownBtn" class="bg-yellow-500 text-white px-10 py-4 rounded mb-1" onclick="downloadImage()">Download Image</button> -->
+        <button id="imgDownBtn" class="bg-yellow-500 text-white px-10 py-4 rounded mb-1" onclick="downloadPDF()">Download PDF</button>
         <button id="mailBtn" class="bg-green-500 text-white px-10 py-4 rounded mb-1" onclick="sendMail()">Send Mail</button>
       </div>
       <!-- <div class="mt-6 text-center flex"> -->
@@ -283,8 +285,84 @@
       var formattedDay = String(day).padStart(2, '0');
       return year + '-' + formattedMonth + '-' + formattedDay;
     }
+
+    async function downloadPDF() {
+      const isMobile          = window.innerWidth <= 768;
+      const modelName         = document.getElementsByClassName("selectModel")[0].innerText || "unkownun";
+      const captureArea       = document.getElementById('capture-area');
+      const buttonsDiv        = document.getElementById('buttons-div');
+      const inputValues       = document.querySelectorAll(".inputValues");
+      const imageDiv          = document.querySelectorAll(".imageDiv");
+      const diagramValue1     = document.getElementById('diagramValue1');
+      const diagramValue2     = document.getElementById('diagramValue2');
+      const loadingOverlay    = document.getElementById('loading-overlay');
+      const viewport          = document.querySelector('meta[name="viewport"]');
+      const originalViewport  = viewport.getAttribute('content');
+      // 모바일 여부 확인
+      if(isMobile){
+        console.log("모바일 환경 → 데스크탑 모드로 변경 후 다운로드");
+        viewport.setAttribute('content', 'width=1200, initial-scale=1.0');
+      }
+      //스크롤 이동
+      window.scrollTo(0, 0);
+      // 로딩창 오픈
+      loadingOverlay.classList.remove("hidden");
+      // 숨길꺼
+      buttonsDiv.classList.add("hidden");
+      diagramValue1.classList.add("mb-2");
+      diagramValue2.classList.add("mb-2");
+
+      imageDiv.forEach(el => el.classList.remove("hidden"));
+      
+      inputValues.forEach(el => {
+        el.classList.add("hidden");
+        const hiddenEl = document.querySelector(`#hidden-${el.id}`);
+        if (hiddenEl) hiddenEl.textContent = el.value;
+      });
+
+      // STEP 2: 강제 DOM 렌더링 대기 (로딩 포함)
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // STEP 3: 캡처 직전에 로딩 숨김 → 캡처 → 바로 다시 표시
+      loadingOverlay.classList.add("hidden");
+      await new Promise(resolve => setTimeout(resolve, 500)); // 로딩 사라짐 반영 대기
+      await html2canvas(captureArea, {
+        useCORS: true,
+        backgroundColor: '#fff', // 배경색 없으면 투명 배경이라 검정으로 나올 수 있음
+        scale: 2
+      }).then(canvas =>{
+        // 다시 버튼 보이게
+        buttonsDiv.classList.remove("hidden");
+        diagramValue1.classList.remove("mb-2");
+        diagramValue2.classList.remove("mb-2");
+        inputValues.forEach(el => el.classList.remove("hidden"));
+        imageDiv.forEach(el => el.classList.add("hidden"));
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4',
+        });
+
+        // PDF 사이즈에 맞게 캔버스 이미지 크기 계산
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = pageWidth;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save('JAC_Coupling_Result(' + modelName + ')_' + getDate() + '.pdf');
+        // 모바일 환경일 경우 viewport 원상 복구
+        if (isMobile && viewport) {
+          viewport.setAttribute('content', originalViewport);
+          console.log("🔄 viewport 복구 완료");
+        }
+      });
+      
+    }
     
-     async function downloadImage() {
+    async function downloadImage() {
       
       const modelName         = document.getElementsByClassName("selectModel")[0].innerText || "unkownun";
       const captureArea       = document.getElementById('capture-area');
@@ -344,11 +422,14 @@
       loadingOverlay.classList.remove("hidden");
 
       const inputJson = JSON.parse(sessionStorage.getItem('inputData'));
-      const suitableModelNameAry = [];
+      // let suitableModelNameAry = [];
+      let suitableModelNameAry = "";
       for (let index = 0; index < suitableModels.length; index++) {
         const element = suitableModels[index];
-        suitableModelNameAry.push(element.modelName );
+        // suitableModelNameAry.push(element.modelName );
+        suitableModelNameAry+= (element.modelName + "\n");
       }
+
       let count = 0;
       // console.log("================ mail info ================");
       // console.log(++count,document.getElementById("customer").value);
@@ -356,7 +437,7 @@
       // console.log(++count,document.getElementById("tel").value);
       // console.log(++count,document.getElementById("project").value);
       // console.log(++count,document.getElementById("modelName").innerText);
-      // console.log(++count,suitableModelNameAry.join());
+      // console.log(++count,suitableModelNameAry);
       // console.log(++count,document.getElementById("driver").value);
       // console.log(++count,document.getElementById("driven").value);
       // console.log(++count,document.getElementById("spacer").value);
@@ -378,13 +459,15 @@
       // console.log(++count,sessionStorage.getItem("DBSEUnit"));
       // console.log(++count,inputJson.serviceFactor);
       // jac@jacoup.co.kr
-      emailjs.send("service_10skxr8", "template_lqu8vh8", {
+
+      // emailjs.send("service_10skxr8", "template_bmbz3lf", { // 테스트 템플릿릿
+      emailjs.send("service_10skxr8", "template_lqu8vh8", { // 운영 템플릿
         customer: document.getElementById("customer").value,
         project: document.getElementById("project").value,
         mail: document.getElementById("mail").value,
         tel: document.getElementById("tel").value,
         modelName: document.getElementById("modelName").innerText,
-        suitableModels: suitableModelNameAry.join(),
+        suitableModels: suitableModelNameAry,
         driverHubType: document.getElementById("driver").value,
         drivenHubType: document.getElementById("driven").value,
         spacerMaterial: document.getElementById("spacer").value,
